@@ -68,17 +68,25 @@ access.
 
 ### 5. Deploy
 
+Deployment runs on GitHub Actions — see `.github/workflows/deploy.yml`. Every
+push to `main` publishes the page and the Firestore rules together, and the
+Actions tab has a **Run workflow** button for deploying by hand.
+
+It needs one secret. In the Google Cloud console, under **IAM & Admin → Service
+Accounts**, create an account, grant it the **Firebase Admin** role, and add a
+**JSON** key. Paste the whole file into the repo's **Settings → Secrets and
+variables → Actions** as `FIREBASE_SERVICE_ACCOUNT`.
+
+To deploy from a terminal instead:
+
 ```sh
 npm install -g firebase-tools
 firebase login
-firebase use --add          # pick the project you just created
 firebase deploy
 ```
 
-That publishes the page and the Firestore rules together. The URL comes back as
-`https://YOUR-PROJECT.web.app`.
-
-To push rule changes on their own later: `firebase deploy --only firestore:rules`.
+`.firebaserc` already names the project, so there is no `firebase use` step.
+To push rule changes on their own: `firebase deploy --only firestore:rules`.
 
 ### 6. Open it and create the board
 

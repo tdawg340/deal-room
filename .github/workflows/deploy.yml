@@ -1,0 +1,49 @@
+name: Deploy
+
+# Publishes the page and the Firestore security rules together. Deploying the
+# page without the rules would leave the database on whatever it had before,
+# so the two always ship as one step.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:        # lets you re-deploy by hand from the Actions tab
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install the Firebase CLI
+        run: npm install -g firebase-tools@13
+
+      - name: Authenticate
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Check the config was filled in
+        run: |
+          if grep -q 'YOUR_' public/config.js; then
+            echo "public/config.js still has placeholder values — paste the Firebase web config in first." >&2
+            exit 1
+          fi
+
+      - name: Deploy hosting and Firestore rules
+        run: firebase deploy --only hosting,firestore:rules --project deal-room-2 --non-interactive
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
+
+      - name: Where it landed
+        run: echo "Deployed to https://deal-room-2.web.app"
