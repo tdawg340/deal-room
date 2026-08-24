@@ -6,10 +6,10 @@
  * that every document is encrypted in the browser with your passphrase.
  */
 window.FIREBASE_CONFIG = {
-  apiKey:            "YOUR_API_KEY",
-  authDomain:        "YOUR_PROJECT.firebaseapp.com",
-  projectId:         "YOUR_PROJECT",
-  storageBucket:     "YOUR_PROJECT.firebasestorage.app",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId:             "YOUR_APP_ID"
+  apiKey:            "AIzaSyBHkWJy7yK149Ta2_rzi2Rc2RuvzIttT_c",
+  authDomain:        "deal-room-2.firebaseapp.com",
+  projectId:         "deal-room-2",
+  storageBucket:     "deal-room-2.firebasestorage.app",
+  messagingSenderId: "421826871394",
+  appId:             "1:421826871394:web:40c8bbcbaf9aa6ed0f113b"
 };
