@@ -1,0 +1,36 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // One document per board. Its id is PBKDF2(passphrase) rendered as 64 hex
+    // characters, so the id is unguessable and the passphrase itself never
+    // reaches the server. The body is an AES-GCM ciphertext that this project
+    // has no key for — Firestore is storage here, not a trust boundary.
+    match /rooms/{roomId} {
+
+      function validId() {
+        return roomId.matches('^[0-9a-f]{64}$');
+      }
+
+      function validBody() {
+        return request.resource.data.keys().hasOnly(['v', 'iv', 'ct', 'by', 'updatedAt'])
+            && request.resource.data.v == 1
+            && request.resource.data.iv is string
+            && request.resource.data.iv.size() <= 32
+            && request.resource.data.ct is string
+            // a Firestore document caps at 1 MiB; leave room for the envelope
+            && request.resource.data.ct.size() <= 900000;
+      }
+
+      allow read:          if request.auth != null && validId();
+      allow create, update: if request.auth != null && validId() && validBody();
+      // rotating the passphrase writes the new document, then drops the old one
+      allow delete:        if request.auth != null && validId();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

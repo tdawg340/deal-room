@@ -1,0 +1,2271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Deal Room</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Crect width=%2716%27 height=%2716%27 rx=%273%27 fill=%27%230E5C63%27/%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap">
+
+
+<style>
+/* ---------- tokens ---------- */
+:root{
+  --ground:#F6F7F8; --surface:#FFFFFF; --surface-2:#EFF2F4; --surface-3:#E7EBEE;
+  --ink:#131A21; --ink-2:#3D4A55; --ink-3:#6B7883;
+  --line:#DDE3E8; --line-2:#C6D0D8;
+  --accent:#0E5C63; --accent-2:#0B4A50; --accent-soft:#E1EFEF;
+  --pursue:#2C7A50; --pursue-soft:#E4F1E9;
+  --watch:#A56F12;  --watch-soft:#F7EDD8;
+  --pass:#A93A31;   --pass-soft:#F8E6E3;
+  --gap:#6B7883;    --gap-soft:#EDF0F2;
+  --shadow-1:0 1px 2px rgba(19,26,33,.05);
+  --shadow-2:0 2px 4px rgba(19,26,33,.06), 0 12px 28px -14px rgba(19,26,33,.24);
+  --shadow-3:0 4px 8px rgba(19,26,33,.08), 0 24px 60px -20px rgba(19,26,33,.34);
+  --r:8px; --r-lg:12px;
+  --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0D1216; --surface:#151B21; --surface-2:#1C242B; --surface-3:#232D35;
+    --ink:#E6EBEF; --ink-2:#B2BEC8; --ink-3:#7D8B97;
+    --line:#242E36; --line-2:#33404A;
+    --accent:#4FB3B8; --accent-2:#7FCED2; --accent-soft:#123236;
+    --pursue:#5AB183; --pursue-soft:#14291D;
+    --watch:#D9A441;  --watch-soft:#2F2512;
+    --pass:#E0726A;   --pass-soft:#331C1A;
+    --gap:#7D8B97;    --gap-soft:#1E262C;
+    --shadow-1:0 1px 2px rgba(0,0,0,.4);
+    --shadow-2:0 2px 4px rgba(0,0,0,.4), 0 12px 28px -14px rgba(0,0,0,.7);
+    --shadow-3:0 4px 8px rgba(0,0,0,.5), 0 24px 60px -20px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0D1216; --surface:#151B21; --surface-2:#1C242B; --surface-3:#232D35;
+  --ink:#E6EBEF; --ink-2:#B2BEC8; --ink-3:#7D8B97;
+  --line:#242E36; --line-2:#33404A;
+  --accent:#4FB3B8; --accent-2:#7FCED2; --accent-soft:#123236;
+  --pursue:#5AB183; --pursue-soft:#14291D;
+  --watch:#D9A441;  --watch-soft:#2F2512;
+  --pass:#E0726A;   --pass-soft:#331C1A;
+  --gap:#7D8B97;    --gap-soft:#1E262C;
+  --shadow-1:0 1px 2px rgba(0,0,0,.4);
+  --shadow-2:0 2px 4px rgba(0,0,0,.4), 0 12px 28px -14px rgba(0,0,0,.7);
+  --shadow-3:0 4px 8px rgba(0,0,0,.5), 0 24px 60px -20px rgba(0,0,0,.8);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+/* a class that sets display would otherwise beat the UA rule for [hidden] */
+[hidden]{display:none !important}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--sans); font-size:15px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{margin:0; text-wrap:balance; font-weight:600}
+p{margin:0}
+button,input,select,textarea{font:inherit; color:inherit}
+button{cursor:pointer; background:none; border:none; padding:0}
+a{color:var(--accent); text-decoration-thickness:1px; text-underline-offset:2px}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
+.num{font-family:var(--mono); font-variant-numeric:tabular-nums; font-feature-settings:"zero" 1}
+.eyebrow{
+  font-size:10.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-3);
+}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- shell ---------- */
+.wrap{max-width:1160px; margin:0 auto; padding:0 24px 96px}
+@media (max-width:640px){ .wrap{padding:0 14px 72px} }
+
+.topbar{
+  position:sticky; top:0; z-index:40;
+  background:color-mix(in srgb, var(--ground) 88%, transparent);
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{
+  max-width:1160px; margin:0 auto; padding:14px 24px;
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+}
+@media (max-width:640px){ .topbar-in{padding:12px 14px; gap:10px} }
+.brand{display:flex; align-items:baseline; gap:10px; margin-right:auto; min-width:0}
+.brand h1{font-family:var(--serif); font-size:22px; font-weight:600; letter-spacing:-.01em; white-space:nowrap}
+.brand .tick{
+  width:9px; height:9px; border-radius:2px; background:var(--accent);
+  align-self:center; flex:none;
+}
+.brand small{color:var(--ink-3); font-size:12px; white-space:nowrap}
+@media (max-width:640px){ .brand small{display:none} }
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex; align-items:center; gap:7px; white-space:nowrap;
+  padding:7px 13px; border-radius:var(--r); border:1px solid var(--line-2);
+  background:var(--surface); color:var(--ink-2); font-size:13.5px; font-weight:500;
+  box-shadow:var(--shadow-1); transition:background .12s, border-color .12s, color .12s;
+}
+.btn:hover{background:var(--surface-2); color:var(--ink); border-color:var(--ink-3)}
+.btn-primary{background:var(--accent); border-color:var(--accent); color:#fff}
+.btn-primary:hover{background:var(--accent-2); border-color:var(--accent-2); color:#fff}
+:root[data-theme="dark"] .btn-primary, :root:not([data-theme="light"]) .btn-primary{color:#08191B}
+@media (prefers-color-scheme:light){ :root:not([data-theme="dark"]) .btn-primary{color:#fff} }
+.btn-ghost{border-color:transparent; background:transparent; box-shadow:none}
+.btn-ghost:hover{background:var(--surface-2)}
+.btn-danger:hover{color:var(--pass); border-color:var(--pass)}
+.btn-sm{padding:4px 9px; font-size:12.5px}
+.btn[disabled]{opacity:.45; cursor:not-allowed}
+.btn svg{width:15px;height:15px;flex:none}
+
+/* ---------- summary strip ---------- */
+.strip{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(132px,1fr));
+  gap:1px; background:var(--line); border:1px solid var(--line);
+  border-radius:var(--r-lg); overflow:hidden; margin:22px 0 18px;
+  box-shadow:var(--shadow-1);
+}
+.stat{background:var(--surface); padding:13px 15px; display:flex; flex-direction:column; gap:5px}
+.stat .v{font-family:var(--mono); font-size:22px; font-weight:500; letter-spacing:-.02em; line-height:1.1}
+.stat .v small{font-size:13px; color:var(--ink-3); font-weight:400}
+.stat.is-pursue .v{color:var(--pursue)}
+.stat.is-watch .v{color:var(--watch)}
+.stat.is-pass .v{color:var(--pass)}
+
+/* ---------- toolbar ---------- */
+.toolbar{display:flex; gap:9px; align-items:center; flex-wrap:wrap; margin-bottom:14px}
+.seg{display:flex; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--r); padding:2px}
+.seg button{
+  padding:5px 11px; border-radius:6px; font-size:12.5px; font-weight:500; color:var(--ink-3);
+}
+.seg button[aria-pressed="true"]{background:var(--surface); color:var(--ink); box-shadow:var(--shadow-1)}
+.field-inline{
+  display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--ink-3);
+}
+select.mini, input.mini{
+  padding:6px 9px; border-radius:var(--r); border:1px solid var(--line-2);
+  background:var(--surface); font-size:13px; color:var(--ink);
+}
+.spacer{margin-left:auto}
+
+/* ---------- deal ledger ---------- */
+.ledger{display:flex; flex-direction:column; gap:10px}
+.deal{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
+  box-shadow:var(--shadow-1); overflow:hidden;
+  transition:box-shadow .15s, border-color .15s;
+}
+.deal:hover{box-shadow:var(--shadow-2)}
+.deal.open{box-shadow:var(--shadow-2); border-color:var(--line-2)}
+.deal.dead{opacity:.6}
+.deal-head{
+  display:grid; align-items:center; gap:16px; width:100%; text-align:left;
+  grid-template-columns:44px minmax(0,1fr) auto auto;
+  padding:14px 16px;
+}
+@media (max-width:820px){
+  .deal-head{grid-template-columns:36px minmax(0,1fr) auto; gap:12px; padding:12px 13px}
+  .deal-head .metrics{grid-column:1/-1; padding-left:48px}
+}
+@media (max-width:520px){ .deal-head .metrics{padding-left:0} }
+
+.rank{
+  font-family:var(--mono); font-size:15px; font-weight:500; color:var(--ink-3);
+  text-align:center; border-right:1px solid var(--line); padding-right:14px; align-self:stretch;
+  display:flex; align-items:center; justify-content:center;
+}
+.identity{min-width:0; display:flex; flex-direction:column; gap:3px}
+.identity h3{
+  font-family:var(--serif); font-size:19px; font-weight:600; letter-spacing:-.01em;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.identity .sub{
+  font-size:12.5px; color:var(--ink-3); display:flex; gap:8px; flex-wrap:wrap; align-items:center;
+}
+.identity .sub .dot{width:3px;height:3px;border-radius:50%;background:var(--line-2);flex:none}
+
+.metrics{display:flex; gap:20px; flex-wrap:wrap}
+.metric{display:flex; flex-direction:column; gap:1px; min-width:56px}
+.metric .k{font-size:10px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-3)}
+.metric .n{font-family:var(--mono); font-size:15px; font-weight:500; letter-spacing:-.01em}
+.metric .n.miss{color:var(--ink-3); font-weight:400}
+.metric.flag .n{color:var(--pass)}
+
+/* verdict */
+.verdict{display:flex; align-items:center; gap:11px; flex:none}
+.score{
+  position:relative; width:46px; height:46px; flex:none;
+  display:grid; place-items:center;
+}
+.score svg{position:absolute; inset:0; transform:rotate(-90deg)}
+.score .t{font-family:var(--mono); font-size:15px; font-weight:600; letter-spacing:-.03em; z-index:1}
+.chip{
+  display:inline-flex; align-items:center; gap:5px;
+  padding:3px 9px; border-radius:100px; font-size:11px; font-weight:600;
+  letter-spacing:.055em; text-transform:uppercase; border:1px solid transparent; white-space:nowrap;
+}
+.chip.pursue{background:var(--pursue-soft); color:var(--pursue); border-color:color-mix(in srgb,var(--pursue) 25%,transparent)}
+.chip.watch{background:var(--watch-soft);  color:var(--watch);  border-color:color-mix(in srgb,var(--watch) 25%,transparent)}
+.chip.pass{background:var(--pass-soft);    color:var(--pass);   border-color:color-mix(in srgb,var(--pass) 25%,transparent)}
+.chip.gap{background:var(--gap-soft);      color:var(--gap);    border-color:var(--line-2)}
+.chip.plain{background:var(--surface-2); color:var(--ink-3); border-color:var(--line); text-transform:none; letter-spacing:.02em; font-weight:500}
+.chip.sample{background:var(--accent-soft); color:var(--accent); border-color:color-mix(in srgb,var(--accent) 25%,transparent); text-transform:none; letter-spacing:.02em}
+
+/* ---------- expanded detail ---------- */
+.detail{border-top:1px solid var(--line); background:var(--surface-2); padding:20px 16px 18px}
+.detail-grid{display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:24px}
+@media (max-width:820px){ .detail-grid{grid-template-columns:1fr; gap:20px} }
+.panel{display:flex; flex-direction:column; gap:11px}
+.panel > .eyebrow{padding-bottom:2px; border-bottom:1px solid var(--line-2)}
+.detail-band{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:24px; margin-top:22px; padding-top:20px; border-top:1px solid var(--line-2);
+  align-items:start;
+}
+
+/* criteria table */
+.crit{display:flex; flex-direction:column; gap:0}
+.crit-row{
+  display:grid; grid-template-columns:minmax(0,1fr) 78px 108px 46px;
+  align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--line);
+  font-size:13px;
+}
+.crit-row:last-child{border-bottom:none}
+@media (max-width:520px){ .crit-row{grid-template-columns:minmax(0,1fr) 66px 46px} .crit-row .track{display:none} }
+.crit-row .lbl{display:flex; align-items:center; gap:7px; min-width:0}
+.crit-row .lbl span{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.crit-row .val{font-family:var(--mono); font-size:13.5px; text-align:right; font-weight:500}
+.crit-row .val.miss{color:var(--ink-3); font-weight:400}
+.crit-row .pts{font-family:var(--mono); font-size:12.5px; text-align:right; color:var(--ink-3)}
+.gate-mark{
+  font-size:9px; font-weight:700; letter-spacing:.06em; padding:1px 4px; border-radius:3px;
+  background:var(--surface-3); color:var(--ink-3); border:1px solid var(--line-2); flex:none;
+}
+.gate-mark.failed{background:var(--pass-soft); color:var(--pass); border-color:color-mix(in srgb,var(--pass) 30%,transparent)}
+.track{position:relative; height:7px; border-radius:100px; background:var(--surface-3); overflow:hidden}
+.track i{position:absolute; inset:0 auto 0 0; border-radius:100px; display:block}
+.track .marks{position:absolute; inset:0; pointer-events:none}
+.track .marks u{position:absolute; top:0; bottom:0; width:1px; background:var(--surface); opacity:.85}
+
+/* underwriting readout */
+.readout{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:var(--r); overflow:hidden}
+@media (max-width:520px){ .readout{grid-template-columns:1fr} }
+.readout .cell{background:var(--surface); padding:9px 12px; display:flex; justify-content:space-between; align-items:baseline; gap:10px}
+.readout .cell.full{grid-column:1/-1}
+.readout .cell.rule{background:var(--surface-2); font-weight:600}
+.readout .cell .k{font-size:12.5px; color:var(--ink-3)}
+.readout .cell.rule .k{color:var(--ink-2)}
+.readout .cell .v{font-family:var(--mono); font-size:13.5px; font-weight:500; white-space:nowrap}
+.readout .cell .v.neg{color:var(--pass)}
+.readout .cell .v.miss{color:var(--ink-3); font-weight:400}
+
+.notebox{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r);
+  padding:11px 13px; font-size:13.5px; color:var(--ink-2); white-space:pre-wrap; line-height:1.55;
+}
+.gaps{
+  background:var(--gap-soft); border:1px dashed var(--line-2); border-radius:var(--r);
+  padding:10px 13px; font-size:12.5px; color:var(--ink-2); line-height:1.6;
+}
+.gaps b{color:var(--ink); font-weight:600}
+
+/* docs + log */
+.doclist{display:flex; flex-direction:column; gap:6px}
+.docrow{
+  display:flex; align-items:center; gap:9px; padding:8px 11px; font-size:13px;
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r);
+}
+.docrow .nm{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.docrow .sz{font-family:var(--mono); font-size:11.5px; color:var(--ink-3); flex:none}
+.docrow svg{width:15px; height:15px; color:var(--ink-3); flex:none}
+
+.log{display:flex; flex-direction:column; gap:0}
+.logrow{display:flex; gap:11px; padding:9px 0; border-bottom:1px solid var(--line); font-size:13px}
+.logrow:last-child{border-bottom:none}
+.logrow .when{font-family:var(--mono); font-size:11.5px; color:var(--ink-3); flex:none; width:74px; padding-top:2px}
+.logrow .body{min-width:0; display:flex; flex-direction:column; gap:3px}
+.logrow .who{font-size:11.5px; color:var(--ink-3)}
+.detail-actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; padding-top:14px; border-top:1px solid var(--line-2)}
+
+/* ---------- empty ---------- */
+.empty{
+  text-align:center; padding:64px 24px; background:var(--surface);
+  border:1px dashed var(--line-2); border-radius:var(--r-lg);
+}
+.empty h2{font-family:var(--serif); font-size:26px; margin-bottom:8px}
+.empty p{color:var(--ink-3); max-width:46ch; margin:0 auto 20px; font-size:14px}
+.empty .row{display:flex; gap:9px; justify-content:center; flex-wrap:wrap}
+
+/* ---------- modal / sheet ---------- */
+.scrim{
+  position:fixed; inset:0; z-index:60; background:rgba(10,15,19,.5);
+  backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px);
+  display:flex; align-items:flex-start; justify-content:center; padding:28px 18px;
+  overflow-y:auto;
+}
+@media (max-width:640px){ .scrim{padding:0} }
+.sheet{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
+  box-shadow:var(--shadow-3); width:100%; max-width:940px; margin:auto 0;
+  display:flex; flex-direction:column; overflow:hidden;
+}
+.sheet.narrow{max-width:600px}
+@media (max-width:640px){ .sheet{border-radius:0; border:none; min-height:100%} }
+.sheet-head{
+  display:flex; align-items:center; gap:12px; padding:16px 20px;
+  border-bottom:1px solid var(--line); position:sticky; top:0; background:var(--surface); z-index:2;
+}
+.sheet-head h2{font-family:var(--serif); font-size:21px; margin-right:auto}
+.sheet-body{padding:20px; display:flex; flex-direction:column; gap:22px}
+.sheet-foot{
+  display:flex; gap:9px; align-items:center; padding:14px 20px;
+  border-top:1px solid var(--line); position:sticky; bottom:0; background:var(--surface);
+}
+
+/* ---------- forms ---------- */
+.form-grid{display:grid; grid-template-columns:minmax(0,1fr) 268px; gap:24px; align-items:start}
+@media (max-width:820px){ .form-grid{grid-template-columns:1fr} }
+fieldset{border:none; margin:0; padding:0; display:flex; flex-direction:column; gap:11px}
+fieldset + fieldset{margin-top:20px}
+legend{
+  padding:0 0 6px; margin-bottom:2px; width:100%; border-bottom:1px solid var(--line-2);
+  font-size:10.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3);
+}
+.fields{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:11px}
+.f{display:flex; flex-direction:column; gap:4px; min-width:0}
+.f.wide{grid-column:1/-1}
+.f label{font-size:12px; font-weight:500; color:var(--ink-2)}
+.f .hint{font-size:11px; color:var(--ink-3); line-height:1.4}
+.f input, .f select, .f textarea{
+  width:100%; padding:8px 10px; border-radius:var(--r); border:1px solid var(--line-2);
+  background:var(--surface); font-size:14px; transition:border-color .12s, box-shadow .12s;
+}
+.f input[type="number"], .f input.num-in{font-family:var(--mono); font-variant-numeric:tabular-nums}
+.f input:focus, .f select:focus, .f textarea:focus{
+  outline:none; border-color:var(--accent);
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+.f textarea{resize:vertical; min-height:76px; line-height:1.55}
+.f .prefixed{position:relative; display:flex; align-items:center}
+.f .prefixed span{
+  position:absolute; left:10px; font-family:var(--mono); font-size:13px; color:var(--ink-3);
+  pointer-events:none;
+}
+.f .prefixed input{padding-left:24px}
+.f .suffixed{position:relative; display:flex; align-items:center}
+.f .suffixed span{
+  position:absolute; right:10px; font-family:var(--mono); font-size:13px; color:var(--ink-3);
+  pointer-events:none;
+}
+.f .suffixed input{padding-right:30px}
+.check{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--ink-2)}
+.check input{width:16px; height:16px; accent-color:var(--accent); flex:none}
+
+/* live preview rail */
+.rail{
+  position:sticky; top:84px; background:var(--surface-2); border:1px solid var(--line);
+  border-radius:var(--r-lg); padding:15px; display:flex; flex-direction:column; gap:13px;
+}
+@media (max-width:820px){ .rail{position:static} }
+.rail-score{display:flex; align-items:center; gap:13px}
+.rail-lines{display:flex; flex-direction:column; gap:0}
+.rail-lines .ln{
+  display:flex; justify-content:space-between; gap:10px; padding:6px 0;
+  border-bottom:1px solid var(--line); font-size:12.5px;
+}
+.rail-lines .ln:last-child{border-bottom:none}
+.rail-lines .ln .k{color:var(--ink-3)}
+.rail-lines .ln .v{font-family:var(--mono); font-weight:500}
+.rail-lines .ln .v.miss{color:var(--ink-3); font-weight:400}
+.rail-lines .ln .v.neg{color:var(--pass)}
+
+/* buy box editor */
+.box-tabs{display:flex; gap:2px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--r); padding:2px; align-self:flex-start}
+.box-tabs button{padding:6px 13px; border-radius:6px; font-size:13px; font-weight:500; color:var(--ink-3)}
+.box-tabs button[aria-pressed="true"]{background:var(--surface); color:var(--ink); box-shadow:var(--shadow-1)}
+.box-table{width:100%; border-collapse:collapse; font-size:13px}
+.box-table th{
+  text-align:right; padding:0 6px 8px; font-size:10px; font-weight:600; letter-spacing:.07em;
+  text-transform:uppercase; color:var(--ink-3); white-space:nowrap;
+}
+.box-table th:first-child{text-align:left}
+.box-table td{padding:5px 6px; border-top:1px solid var(--line)}
+.box-table td:first-child{font-size:13px}
+.box-table input{
+  width:100%; min-width:52px; padding:5px 7px; text-align:right; border-radius:6px;
+  border:1px solid var(--line-2); background:var(--surface);
+  font-family:var(--mono); font-size:12.5px; font-variant-numeric:tabular-nums;
+}
+.box-table input:focus{outline:none; border-color:var(--accent); box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 16%,transparent)}
+.box-table td.gatecell{text-align:center}
+.box-table td.gatecell input{width:16px; min-width:0; accent-color:var(--accent)}
+.box-scroll{overflow-x:auto; margin:0 -2px; padding:0 2px}
+.wsum{font-family:var(--mono); font-size:12.5px; color:var(--ink-3)}
+.wsum.bad{color:var(--watch)}
+
+/* ---------- meeting mode ---------- */
+body.meeting .topbar{position:static}
+body.meeting .strip{margin-top:14px}
+.meeting-note{
+  display:flex; align-items:center; gap:10px; padding:9px 14px; margin:18px 0 0;
+  background:var(--accent-soft); border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);
+  border-radius:var(--r); font-size:13px; color:var(--accent);
+}
+body.meeting .deal-head{padding:18px}
+body.meeting .identity h3{font-size:23px}
+body.meeting .metric .n{font-size:17px}
+body.meeting .hide-in-meeting{display:none}
+
+/* ---------- toast ---------- */
+.toasts{position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:90; display:flex; flex-direction:column; gap:8px; align-items:center; pointer-events:none}
+.toast{
+  background:var(--ink); color:var(--ground); padding:9px 15px; border-radius:100px;
+  font-size:13px; font-weight:500; box-shadow:var(--shadow-3); max-width:88vw;
+  animation:pop .2s ease-out;
+}
+.toast.warn{background:var(--watch); color:#1B1405}
+.toast.err{background:var(--pass); color:#fff}
+@keyframes pop{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+@media (prefers-reduced-motion:reduce){ *{animation-duration:.001ms !important; transition-duration:.001ms !important} }
+
+.banner{
+  display:flex; align-items:center; gap:10px; padding:10px 14px; margin-top:16px;
+  background:var(--watch-soft); border:1px solid color-mix(in srgb,var(--watch) 30%,transparent);
+  border-radius:var(--r); font-size:13px; color:var(--watch);
+}
+.banner svg{width:16px;height:16px;flex:none}
+
+/* ---------- print ---------- */
+@media print{
+  :root{--ground:#fff; --surface:#fff; --surface-2:#fff; --line:#ccc}
+  .topbar, .toolbar, .detail-actions, .toasts, .meeting-note, .hide-in-print{display:none !important}
+  body{background:#fff}
+  .deal{break-inside:avoid; box-shadow:none; border:1px solid #ccc}
+  .wrap{padding:0}
+}
+/* ---------- passphrase gate ---------- */
+.gate{
+  position:fixed; inset:0; z-index:100; background:var(--ground);
+  display:flex; align-items:center; justify-content:center; padding:24px;
+}
+.gate-card{
+  width:100%; max-width:410px; display:flex; flex-direction:column; gap:18px;
+}
+.gate-brand{display:flex; align-items:center; gap:10px}
+.gate-brand .tick{width:11px; height:11px; border-radius:2px; background:var(--accent); flex:none}
+.gate-brand h1{font-family:var(--serif); font-size:27px; font-weight:600; letter-spacing:-.015em}
+.gate-card > p{color:var(--ink-3); font-size:13.5px; line-height:1.6; max-width:44ch}
+.gate-form{display:flex; flex-direction:column; gap:11px}
+.gate-form label{font-size:12px; font-weight:500; color:var(--ink-2)}
+.gate-form input[type="password"], .gate-form input[type="text"]{
+  width:100%; padding:11px 13px; border-radius:var(--r); border:1px solid var(--line-2);
+  background:var(--surface); font-size:15px; font-family:var(--mono);
+}
+.gate-form input:focus{
+  outline:none; border-color:var(--accent);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 16%,transparent);
+}
+.gate-msg{font-size:13px; line-height:1.55; padding:10px 13px; border-radius:var(--r)}
+.gate-msg.err{background:var(--pass-soft); color:var(--pass); border:1px solid color-mix(in srgb,var(--pass) 30%,transparent)}
+.gate-msg.info{background:var(--accent-soft); color:var(--accent); border:1px solid color-mix(in srgb,var(--accent) 25%,transparent)}
+.gate-msg.warn{background:var(--watch-soft); color:var(--watch); border:1px solid color-mix(in srgb,var(--watch) 30%,transparent)}
+.gate-foot{font-size:11.5px; color:var(--ink-3); line-height:1.6; border-top:1px solid var(--line); padding-top:13px}
+.gate-busy{display:flex; align-items:center; gap:9px; font-size:13px; color:var(--ink-3)}
+.spinner{
+  width:15px; height:15px; border-radius:50%; flex:none;
+  border:2px solid var(--line-2); border-top-color:var(--accent);
+  animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+</style>
+
+</head>
+<body>
+<div class="gate" id="gate" hidden>
+  <div class="gate-card">
+    <div class="gate-brand"><span class="tick"></span><h1>Deal Room</h1></div>
+    <p id="gate-lede">Enter your team's passphrase. It unlocks the board and decrypts it in your browser — nothing readable is ever stored on the server.</p>
+    <form class="gate-form" id="gate-form" autocomplete="on">
+      <div>
+        <label for="gate-pass">Passphrase</label>
+        <input type="password" id="gate-pass" name="password" autocomplete="current-password" spellcheck="false" autofocus>
+      </div>
+      <div id="gate-confirm-wrap" hidden>
+        <label for="gate-confirm">Confirm passphrase</label>
+        <input type="password" id="gate-confirm" name="confirm" autocomplete="new-password" spellcheck="false">
+      </div>
+      <label class="check"><input type="checkbox" id="gate-remember"> Stay unlocked on this device</label>
+      <div id="gate-msg"></div>
+      <button class="btn btn-primary" type="submit" id="gate-go" style="justify-content:center;padding:10px">Unlock</button>
+      <button class="btn" type="button" id="gate-create" hidden style="justify-content:center;padding:10px">Create a new board with this passphrase</button>
+    </form>
+    <p class="gate-foot">Anyone with the passphrase has full access, and there is no way to revoke one person — if someone leaves the team, change it for everybody from the board's settings.</p>
+  </div>
+</div>
+
+<div class="topbar hide-in-print">
+  <div class="topbar-in" id="topbar"></div>
+</div>
+<main class="wrap" id="app"></main>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script src="config.js"></script>
+<script type="module">
+/* =========================================================================
+   DealStore — passphrase-derived identity + end-to-end encryption over
+   Firestore. The passphrase never leaves the browser; neither does the
+   plaintext board. Firestore only ever sees a random-looking document id
+   and an AES-GCM ciphertext.
+   ========================================================================= */
+
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
+import { getAuth, signInAnonymously, onAuthStateChanged }
+  from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc, deleteDoc, onSnapshot, serverTimestamp }
+  from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
+
+var ITERATIONS = 250000;
+var enc = new TextEncoder();
+var dec = new TextDecoder();
+
+function hex(bytes){
+  return Array.prototype.map.call(bytes, function(b){
+    return ('0' + b.toString(16)).slice(-2);
+  }).join('');
+}
+function b64(bytes){
+  var s = '';
+  for (var i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+  return btoa(s);
+}
+function unb64(str){
+  var s = atob(str), out = new Uint8Array(s.length);
+  for (var i = 0; i < s.length; i++) out[i] = s.charCodeAt(i);
+  return out;
+}
+
+/* Two independent derivations from one passphrase: where the board lives,
+   and the key that opens it. Different salts keep them unrelated, so the
+   document id leaks nothing about the encryption key. */
+async function derive(passphrase){
+  var base = await crypto.subtle.importKey(
+    'raw', enc.encode(passphrase.normalize('NFKC')), 'PBKDF2', false, ['deriveBits', 'deriveKey']);
+
+  var idBits = await crypto.subtle.deriveBits(
+    { name:'PBKDF2', salt: enc.encode('dealroom/doc-id/v1'), iterations: ITERATIONS, hash:'SHA-256' },
+    base, 256);
+
+  var key = await crypto.subtle.deriveKey(
+    { name:'PBKDF2', salt: enc.encode('dealroom/aes-key/v1'), iterations: ITERATIONS, hash:'SHA-256' },
+    base, { name:'AES-GCM', length:256 }, false, ['encrypt', 'decrypt']);
+
+  return { id: hex(new Uint8Array(idBits)), key: key };
+}
+
+async function seal(key, obj){
+  var iv = crypto.getRandomValues(new Uint8Array(12));
+  var ct = await crypto.subtle.encrypt(
+    { name:'AES-GCM', iv: iv }, key, enc.encode(JSON.stringify(obj)));
+  return { iv: b64(iv), ct: b64(new Uint8Array(ct)) };
+}
+
+async function unseal(key, blob){
+  var pt = await crypto.subtle.decrypt(
+    { name:'AES-GCM', iv: unb64(blob.iv) }, key, unb64(blob.ct));
+  return JSON.parse(dec.decode(pt));
+}
+
+/* ------------------------------------------------------------------ wiring */
+
+var app = null, db = null, auth = null, initError = null;
+
+try {
+  if (!window.FIREBASE_CONFIG || !window.FIREBASE_CONFIG.projectId ||
+      /YOUR_/.test(JSON.stringify(window.FIREBASE_CONFIG))){
+    initError = 'unconfigured';
+  } else {
+    app  = initializeApp(window.FIREBASE_CONFIG);
+    auth = getAuth(app);
+    db   = getFirestore(app);
+  }
+} catch (e){
+  initError = e && e.message ? e.message : 'could not start Firebase';
+}
+
+var signedIn = initError ? Promise.reject(new Error(initError)) : signInAnonymously(auth).then(function(){
+  return true;
+}, function(err){
+  var code = (err && err.code) || '';
+  if (/operation-not-allowed|admin-restricted/.test(code)){
+    throw new Error('anonymous-auth-off');
+  }
+  throw err;
+});
+signedIn.catch(function(){ /* surfaced through the calls below */ });
+
+function ref(room){ return doc(db, 'rooms', room.id); }
+
+window.DealStore = {
+  initError: initError,
+
+  ready: function(){ return signedIn; },
+
+  derive: derive,
+
+  /* null means no board exists at this passphrase — the caller decides
+     whether that is a typo or a first run. */
+  load: async function(room){
+    await signedIn;
+    var snap = await getDoc(ref(room));
+    if (!snap.exists()) return null;
+    var data = snap.data();
+    try {
+      return await unseal(room.key, data);
+    } catch (e){
+      var err = new Error('undecryptable');
+      err.code = 'undecryptable';
+      throw err;
+    }
+  },
+
+  save: async function(room, state, token){
+    await signedIn;
+    var blob = await seal(room.key, state);
+    await setDoc(ref(room), {
+      v: 1, iv: blob.iv, ct: blob.ct, by: token, updatedAt: serverTimestamp()
+    });
+  },
+
+  watch: function(room, onChange, onError){
+    if (!db) return function(){};
+    return onSnapshot(ref(room), function(snap){
+      if (!snap.exists() || snap.metadata.hasPendingWrites) return;
+      var data = snap.data();
+      unseal(room.key, data).then(function(state){
+        onChange(state, data.by);
+      }, function(){ /* a write we cannot read is not actionable here */ });
+    }, function(err){ if (onError) onError(err); });
+  },
+
+  /* Move the board to a new passphrase: write it under the new id, then drop
+     the old document so the retired passphrase opens nothing. */
+  rekey: async function(oldRoom, newRoom, state, token){
+    await signedIn;
+    var blob = await seal(newRoom.key, state);
+    await setDoc(ref(newRoom), {
+      v: 1, iv: blob.iv, ct: blob.ct, by: token, updatedAt: serverTimestamp()
+    });
+    if (oldRoom && oldRoom.id !== newRoom.id){
+      try { await deleteDoc(ref(oldRoom)); } catch (e){ /* new copy is safe; old one lingers */ }
+    }
+  },
+
+  exists: async function(room){
+    await signedIn;
+    var snap = await getDoc(ref(room));
+    return snap.exists();
+  }
+};
+
+window.dispatchEvent(new Event('dealstore-ready'));
+</script>
+
+
+<script>
+(function(){
+"use strict";
+
+/* =========================================================================
+   Deal Room — shared underwriting scorecard
+   State lives in the #deal-room-state JSON block. Every change regenerates
+   the document from the pristine source captured at boot and republishes it,
+   so the page itself is the record every teammate sees.
+   ========================================================================= */
+
+var STATE = null;
+var READONLY = false;
+var UI = {
+  view: 'board',              /* board | form | buybox */
+  openId: null,
+  editing: null,              /* draft deal object while the form is open */
+  boxTab: 'multifamily',
+  sort: 'score',
+  filter: 'live',
+  meeting: false,
+  dirty: false
+};
+
+/* ---------------------------------------------------------------- defaults */
+
+var ASSET_CLASSES = {
+  multifamily: 'Multifamily',
+  commercial: 'Commercial / mixed-use'
+};
+
+var STAGES = {
+  screening: 'Screening',
+  reviewing: 'Under review',
+  offer: 'Offer out',
+  closed: 'Closed',
+  dead: 'Dead'
+};
+
+function defaultBuyBox(){
+  return {
+    multifamily: {
+      pursue: 75, watch: 55,
+      criteria: [
+        {key:'capRate',      label:'Cap rate',              unit:'%',  dir:'up',   fail:4.0,  min:5.0,  target:6.25, stretch:7.5,  weight:18, gate:false},
+        {key:'coc',          label:'Cash-on-cash',          unit:'%',  dir:'up',   fail:2,    min:5,    target:8,    stretch:12,   weight:20, gate:false},
+        {key:'dscr',         label:'DSCR',                  unit:'x',  dir:'up',   fail:1.00, min:1.20, target:1.35, stretch:1.60, weight:20, gate:true},
+        {key:'expenseRatio', label:'Expense ratio',         unit:'%',  dir:'down', fail:60,   min:52,   target:44,   stretch:36,   weight:10, gate:false},
+        {key:'rentToPrice',  label:'Monthly rent / price',  unit:'%',  dir:'up',   fail:0.45, min:0.60, target:0.80, stretch:1.00, weight:12, gate:false},
+        {key:'breakEvenOcc', label:'Break-even occupancy',  unit:'%',  dir:'down', fail:95,   min:88,   target:82,   stretch:75,   weight:10, gate:false},
+        {key:'debtYield',    label:'Debt yield',            unit:'%',  dir:'up',   fail:7,    min:8.5,  target:10,   stretch:12,   weight:10, gate:false}
+      ]
+    },
+    commercial: {
+      pursue: 75, watch: 55,
+      criteria: [
+        {key:'capRate',      label:'Cap rate',              unit:'%',  dir:'up',   fail:4.5,  min:5.5,  target:6.75, stretch:8.0,  weight:18, gate:false},
+        {key:'coc',          label:'Cash-on-cash',          unit:'%',  dir:'up',   fail:3,    min:6,    target:9,    stretch:13,   weight:16, gate:false},
+        {key:'dscr',         label:'DSCR',                  unit:'x',  dir:'up',   fail:1.05, min:1.25, target:1.40, stretch:1.65, weight:18, gate:true},
+        {key:'debtYield',    label:'Debt yield',            unit:'%',  dir:'up',   fail:7.5,  min:9,    target:10.5, stretch:12.5, weight:12, gate:false},
+        {key:'walt',         label:'WALT',                  unit:'yr', dir:'up',   fail:1,    min:3,    target:5,    stretch:8,    weight:14, gate:false},
+        {key:'occupancy',    label:'Occupancy',             unit:'%',  dir:'up',   fail:70,   min:85,   target:92,   stretch:97,   weight:12, gate:false},
+        {key:'tenantShare',  label:'Largest tenant share',  unit:'%',  dir:'down', fail:75,   min:55,   target:35,   stretch:20,   weight:10, gate:false}
+      ]
+    }
+  };
+}
+
+/* ------------------------------------------------------------------ number */
+
+function num(v){
+  if (v === null || v === undefined || v === '') return null;
+  var n = typeof v === 'number' ? v : Number(String(v).replace(/[$,\s%]/g,''));
+  return isFinite(n) ? n : null;
+}
+function or(v, d){ return v === null || v === undefined ? d : v; }
+function round(n, p){ var f = Math.pow(10, p||0); return Math.round(n*f)/f; }
+
+function money(n, opts){
+  if (n === null || n === undefined || !isFinite(n)) return '—';
+  var abs = Math.abs(n), s;
+  if (opts && opts.compact && abs >= 1e6) s = '$' + round(n/1e6, 2) + 'M';
+  else if (opts && opts.compact && abs >= 10000) s = '$' + round(n/1e3, 0) + 'K';
+  else s = '$' + Math.round(n).toLocaleString('en-US');
+  return s.replace('$-','-$');
+}
+function pct(n, p){
+  if (n === null || n === undefined || !isFinite(n)) return '—';
+  return round(n, p === undefined ? 2 : p).toFixed(p === undefined ? 2 : p) + '%';
+}
+function mult(n){
+  if (n === null || n === undefined || !isFinite(n)) return '—';
+  return n.toFixed(2) + '×';
+}
+function fmtMetric(v, unit){
+  if (v === null || v === undefined || !isFinite(v)) return '—';
+  if (unit === '%')  return pct(v, 2);
+  if (unit === 'x')  return mult(v);
+  if (unit === 'yr') return round(v,1).toFixed(1) + ' yr';
+  return String(round(v,2));
+}
+
+/* ------------------------------------------------------------------ escape */
+
+function esc(s){
+  return String(s === null || s === undefined ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function attr(s){ return esc(s); }
+
+/* ================================================================ UNDERWRITE
+   One engine for both asset classes: everything hangs off NOI. Any metric
+   whose inputs are missing comes back null and is dropped from the score
+   rather than silently counted as zero.
+   ========================================================================= */
+
+function payment(principal, ratePct, years){
+  if (!(principal > 0) || !(years > 0)) return null;
+  if (ratePct === null) return null;
+  var r = ratePct/100/12, n = years*12;
+  if (r === 0) return principal/n;
+  return principal * r / (1 - Math.pow(1+r, -n));
+}
+
+var OPEX_LINES = ['taxes','insurance','utilities','repairs','management','adminOther','reserves'];
+
+function underwrite(d){
+  var m = {};
+  var missing = [];
+
+  var price   = or(num(d.offerPrice), num(d.askingPrice));
+  var units   = num(d.units);
+  var sf      = num(d.squareFeet);
+  var gsr     = num(d.grossScheduledRent);
+  var other   = or(num(d.otherIncome), 0);
+  var vac     = or(num(d.vacancyPct), 5);
+  var capex   = or(num(d.capExImmediate), 0);
+  var closePc = or(num(d.closingCostsPct), 2);
+  var downPc  = num(d.downPct);
+  var rate    = num(d.interestRate);
+  var amort   = or(num(d.amortYears), 30);
+  var feePc   = or(num(d.loanFeesPct), 0);
+
+  if (price === null) missing.push('purchase price');
+  if (gsr === null)   missing.push('gross scheduled rent');
+
+  /* operating expenses: itemized wins when any line is filled in */
+  var opex = null, opexParts = null;
+  if (d.opExMode === 'itemized'){
+    var any = false, sum = 0;
+    opexParts = {};
+    OPEX_LINES.forEach(function(k){
+      var v = num(d[k]);
+      if (v !== null){ any = true; sum += v; opexParts[k] = v; }
+    });
+    if (any) opex = sum;
+  } else {
+    opex = num(d.opExTotal);
+  }
+  if (opex === null) missing.push('operating expenses');
+
+  var vacancyLoss = gsr === null ? null : gsr * vac/100;
+  var egi = gsr === null ? null : gsr - vacancyLoss + other;
+  var noi = (egi !== null && opex !== null) ? egi - opex : null;
+
+  var closingCosts = price === null ? null : price * closePc/100;
+  var allIn = (price === null) ? null : price + capex + (closingCosts || 0);
+
+  var loan = (price !== null && downPc !== null) ? price * (1 - downPc/100) : null;
+  var loanFees = loan === null ? null : loan * feePc/100;
+  var ads = null;
+  if (loan !== null && rate !== null){
+    ads = d.interestOnly ? loan * rate/100 : (payment(loan, rate, amort) || 0) * 12;
+  } else if (loan !== null && rate === null){
+    missing.push('interest rate');
+  }
+  if (downPc === null) missing.push('down payment');
+
+  var cashIn = null;
+  if (price !== null && downPc !== null){
+    cashIn = price * downPc/100 + (closingCosts || 0) + capex + (loanFees || 0);
+  }
+  var cashFlow = (noi !== null && ads !== null) ? noi - ads : null;
+
+  m.price        = price;
+  m.units        = units;
+  m.squareFeet   = sf;
+  m.gsr          = gsr;
+  m.otherIncome  = other;
+  m.vacancyLoss  = vacancyLoss;
+  m.egi          = egi;
+  m.opex         = opex;
+  m.opexParts    = opexParts;
+  m.noi          = noi;
+  m.closingCosts = closingCosts;
+  m.capex        = capex;
+  m.allIn        = allIn;
+  m.loan         = loan;
+  m.loanFees     = loanFees;
+  m.ads          = ads;
+  m.cashIn       = cashIn;
+  m.cashFlow     = cashFlow;
+
+  m.capRate      = (noi !== null && price)  ? noi/price*100 : null;
+  m.capRateAllIn = (noi !== null && allIn)  ? noi/allIn*100 : null;
+  m.coc          = (cashFlow !== null && cashIn) ? cashFlow/cashIn*100 : null;
+  m.dscr         = (noi !== null && ads)    ? noi/ads : null;
+  m.debtYield    = (noi !== null && loan)   ? noi/loan*100 : null;
+  m.grm          = (price !== null && gsr)  ? price/gsr : null;
+  m.expenseRatio = (opex !== null && egi)   ? opex/egi*100 : null;
+  m.rentToPrice  = (gsr !== null && price)  ? (gsr/12)/price*100 : null;
+  m.breakEvenOcc = (opex !== null && ads !== null && gsr) ? (opex + ads)/(gsr + other)*100 : null;
+  m.pricePerUnit = (price !== null && units) ? price/units : null;
+  m.pricePerSF   = (price !== null && sf)    ? price/sf : null;
+  m.cfPerUnitMo  = (cashFlow !== null && units) ? cashFlow/units/12 : null;
+
+  /* commercial-only inputs pass straight through as criteria values */
+  m.occupancy    = num(d.occupancyPct);
+  m.walt         = num(d.walt);
+  m.tenantShare  = num(d.largestTenantPct);
+
+  m.missing = missing;
+  return m;
+}
+
+/* ==================================================================== SCORE
+   Each criterion maps a value onto 0–100 by linear interpolation between the
+   four anchors the team sets: fail=0, minimum=50, target=80, stretch=100.
+   ========================================================================= */
+
+function interp(v, anchors){
+  var a = anchors.slice();
+  if (a[a.length-1][0] < a[0][0]) a.reverse();
+  if (v <= a[0][0]) return a[0][1];
+  if (v >= a[a.length-1][0]) return a[a.length-1][1];
+  for (var i=0; i<a.length-1; i++){
+    var x1=a[i][0], y1=a[i][1], x2=a[i+1][0], y2=a[i+1][1];
+    if (v >= x1 && v <= x2){
+      var t = (x2 === x1) ? 0 : (v-x1)/(x2-x1);
+      return y1 + t*(y2-y1);
+    }
+  }
+  return a[a.length-1][1];
+}
+
+function scoreCriterion(value, c){
+  if (value === null || value === undefined || !isFinite(value)) return null;
+  return interp(value, [[c.fail,0],[c.min,50],[c.target,80],[c.stretch,100]]);
+}
+
+function gateFails(value, c){
+  if (!c.gate || value === null || !isFinite(value)) return false;
+  return c.dir === 'up' ? value < c.min : value > c.min;
+}
+
+function assess(deal){
+  var box = getBox()[deal.assetClass] || getBox().multifamily;
+  var m = underwrite(deal);
+  var rows = [], scored = 0, weighted = 0, gatesFailed = [];
+
+  box.criteria.forEach(function(c){
+    var v = m[c.key];
+    var s = scoreCriterion(v, c);
+    var failed = gateFails(v, c);
+    if (failed) gatesFailed.push(c);
+    if (s !== null){ scored += c.weight; weighted += s * c.weight; }
+    rows.push({ c:c, value:v, score:s, gateFailed:failed });
+  });
+
+  var score = scored > 0 ? weighted/scored : null;
+  var coverage = scored / (box.criteria.reduce(function(a,c){ return a + c.weight; }, 0) || 1);
+
+  var verdict;
+  if (gatesFailed.length) verdict = 'pass';
+  else if (score === null || coverage < 0.5) verdict = 'gap';
+  else if (score >= box.pursue) verdict = 'pursue';
+  else if (score >= box.watch)  verdict = 'watch';
+  else verdict = 'pass';
+
+  return {
+    metrics: m, rows: rows, score: score, coverage: coverage,
+    verdict: verdict, gatesFailed: gatesFailed, box: box,
+    unscored: rows.filter(function(r){ return r.score === null; })
+  };
+}
+
+var VERDICT_LABEL = { pursue:'Pursue', watch:'Watch', pass:'Pass', gap:'Needs data' };
+
+/* ================================================================== STORAGE
+   The passphrase is the key, not a doorman. PBKDF2 turns it into two things:
+   the Firestore document id where this team's board lives, and an AES-GCM key
+   that encrypts the board before it leaves the browser. Google stores
+   ciphertext it cannot read, and someone without the passphrase cannot even
+   work out which document to ask for.
+   ========================================================================= */
+
+function blankState(){
+  return { v:1, deals:[], buyBox:null, meta:{} };
+}
+function getBox(){ return STATE.buyBox || defaultBuyBox(); }
+
+var ROOM = null;          /* { id, key } once unlocked */
+var SAVE_TOKEN = Math.random().toString(36).slice(2);  /* ignore our own echoes */
+var saveTimer = null, savePending = null, saving = false;
+
+function persist(label){
+  render();
+  if (!ROOM || !window.DealStore){ UI.dirty = true; render(); return; }
+  savePending = label || 'Saved';
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(flush, 400);   /* batch rapid edits into one write */
+}
+
+function flush(){
+  if (!ROOM || savePending === null || saving) return;
+  var label = savePending;
+  savePending = null;
+  saving = true;
+
+  window.DealStore.save(ROOM, STATE, SAVE_TOKEN).then(function(){
+    saving = false;
+    UI.dirty = false;
+    toast(label);
+    render();
+    if (savePending !== null) flush();
+  }, function(err){
+    saving = false;
+    UI.dirty = true;
+    toast('Could not save: ' + friendlyError(err), 'err');
+    render();
+  });
+}
+
+function friendlyError(err){
+  var code = (err && (err.code || err.message)) || 'unknown error';
+  if (/permission-denied/.test(code)) return 'the database rejected the write — check the Firestore rules are deployed';
+  if (/unavailable|network/.test(code)) return 'no connection to the database';
+  if (/resource-exhausted|too large|invalid-argument/.test(code)) return 'the board is too large to store';
+  return String(code);
+}
+
+/* A teammate saved — take their version. Drafts live in UI.editing, outside
+   STATE, so an in-progress form survives the swap untouched. */
+function onRemoteState(next, byToken){
+  if (byToken === SAVE_TOKEN) return;
+  STATE = next;
+  render();
+  toast('Updated by a teammate');
+}
+
+/* per-viewer conveniences only — never shared state */
+function local(key, val){
+  try {
+    if (val === undefined) return localStorage.getItem('dealroom:' + key);
+    if (val === null) localStorage.removeItem('dealroom:' + key);
+    else localStorage.setItem('dealroom:' + key, val);
+  } catch(e){ /* private window, blocked storage — carry on without it */ }
+  return null;
+}
+function whoami(){ return local('who') || ''; }
+
+/* ================================================================ DOWNLOADS */
+
+function download(filename, mime, text){
+  try {
+    var blob = new Blob([text], { type: mime });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+    return true;
+  } catch(e){ return false; }
+}
+
+
+
+
+/* Rebuild the document from the pristine source with the new state swapped in,
+   then hand it to the runtime. Never serialize the live DOM. */
+
+
+
+
+/* per-viewer conveniences only — never shared state */
+
+/* ==================================================================== TOAST */
+
+function toast(msg, kind){
+  var wrap = document.getElementById('toasts');
+  var el = document.createElement('div');
+  el.className = 'toast' + (kind ? ' ' + kind : '');
+  el.textContent = msg;
+  wrap.appendChild(el);
+  setTimeout(function(){ el.remove(); }, kind === 'err' ? 6000 : 3000);
+}
+
+/* ===================================================================== ICONS */
+
+var ICON = {
+  plus:   '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>',
+  sliders:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 5h7M12 5h2M2 11h2M7 11h7"/><circle cx="10.5" cy="5" r="1.6"/><circle cx="5.5" cy="11" r="1.6"/></svg>',
+  present:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1.8" y="2.5" width="12.4" height="8.5" rx="1"/><path d="M8 11v3M5.5 14h5"/></svg>',
+  down:   '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v8M4.5 7.5 8 11l3.5-3.5M2.5 13.5h11"/></svg>',
+  doc:    '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M9 1.5H4.2a.7.7 0 0 0-.7.7v11.6a.7.7 0 0 0 .7.7h7.6a.7.7 0 0 0 .7-.7V5z"/><path d="M9 1.5V5h3.5"/></svg>',
+  link:   '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6.6 9.4a2.7 2.7 0 0 0 4 .3l1.9-1.9a2.7 2.7 0 0 0-3.8-3.8l-1.1 1.1"/><path d="M9.4 6.6a2.7 2.7 0 0 0-4-.3L3.5 8.2a2.7 2.7 0 0 0 3.8 3.8l1.1-1.1"/></svg>',
+  warn:   '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.8 14.5 13.5h-13z"/><path d="M8 6.6v3.2M8 11.9h.01"/></svg>',
+  lock:   '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="3" y="7" width="10" height="7" rx="1.2"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>',
+  chev:   '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 6.5 8 10l3.5-3.5"/></svg>'
+};
+
+/* ================================================================= SCORE DIAL */
+
+function dial(score, verdict, size){
+  var s = size || 46, r = (s/2) - 4, c = 2*Math.PI*r;
+  var v = score === null ? 0 : Math.max(0, Math.min(100, score));
+  var col = 'var(--' + (verdict === 'gap' ? 'gap' : verdict) + ')';
+  return '<div class="score" style="width:' + s + 'px;height:' + s + 'px">' +
+    '<svg viewBox="0 0 ' + s + ' ' + s + '" aria-hidden="true">' +
+      '<circle cx="' + s/2 + '" cy="' + s/2 + '" r="' + r + '" fill="none" stroke="var(--surface-3)" stroke-width="3.5"/>' +
+      '<circle cx="' + s/2 + '" cy="' + s/2 + '" r="' + r + '" fill="none" stroke="' + col + '" stroke-width="3.5" ' +
+        'stroke-linecap="round" stroke-dasharray="' + (c*v/100).toFixed(2) + ' ' + c.toFixed(2) + '"/>' +
+    '</svg>' +
+    '<span class="t" style="color:' + col + '">' + (score === null ? '–' : Math.round(score)) + '</span>' +
+  '</div>';
+}
+
+/* =================================================================== TOPBAR */
+
+function renderTopbar(){
+  var n = STATE.deals.length;
+  var bits = [];
+  bits.push('<div class="brand"><span class="tick"></span><h1>Deal Room</h1>' +
+    '<small>' + (n ? n + (n === 1 ? ' deal' : ' deals') + ' · ' + boxVersionLabel() + ' buy box' : 'weekly investment review') + '</small></div>');
+
+  if (UI.meeting){
+    bits.push('<button class="btn" data-act="meeting-off">Exit meeting mode</button>');
+  } else {
+    bits.push('<button class="btn btn-ghost" data-act="meeting-on" title="Full-screen ranked list for screen sharing">' + ICON.present + 'Meeting</button>');
+    bits.push('<button class="btn" data-act="buybox">' + ICON.sliders + 'Buy box</button>');
+    bits.push('<button class="btn btn-primary" data-act="new">' + ICON.plus + 'Add deal</button>');
+    bits.push('<button class="btn btn-ghost btn-sm" data-act="access" title="Passphrase and access" aria-label="Passphrase and access">' + ICON.lock + '</button>');
+  }
+  document.getElementById('topbar').innerHTML = bits.join('');
+}
+
+function boxVersionLabel(){
+  return STATE.buyBox ? 'custom' : 'default';
+}
+
+/* ==================================================================== BOARD */
+
+function visibleDeals(){
+  var list = STATE.deals.slice();
+  if (UI.filter === 'live')      list = list.filter(function(d){ return d.stage !== 'dead' && d.stage !== 'closed'; });
+  else if (UI.filter !== 'all')  list = list.filter(function(d){ return d.stage === UI.filter; });
+
+  var withScore = list.map(function(d){ return { d:d, a:assess(d) }; });
+  withScore.sort(function(x, y){
+    if (UI.sort === 'added')    return (y.d.createdAt || 0) - (x.d.createdAt || 0);
+    if (UI.sort === 'capRate')  return (y.a.metrics.capRate === null ? -1 : y.a.metrics.capRate) - (x.a.metrics.capRate === null ? -1 : x.a.metrics.capRate);
+    if (UI.sort === 'price')    return (y.a.metrics.price || 0) - (x.a.metrics.price || 0);
+    if (UI.sort === 'cashflow') return (y.a.metrics.cashFlow === null ? -1e12 : y.a.metrics.cashFlow) - (x.a.metrics.cashFlow === null ? -1e12 : x.a.metrics.cashFlow);
+    return (y.a.score === null ? -1 : y.a.score) - (x.a.score === null ? -1 : x.a.score);
+  });
+  return withScore;
+}
+
+function renderStrip(rows){
+  var counts = { pursue:0, watch:0, pass:0, gap:0 };
+  var capital = 0, noi = 0, cf = 0, units = 0, haveCap = 0, capSum = 0;
+  rows.forEach(function(r){
+    counts[r.a.verdict]++;
+    if (r.a.metrics.price) capital += r.a.metrics.price;
+    if (r.a.metrics.noi !== null) noi += r.a.metrics.noi;
+    if (r.a.metrics.cashFlow !== null) cf += r.a.metrics.cashFlow;
+    if (r.a.metrics.units) units += r.a.metrics.units;
+    if (r.a.metrics.capRate !== null){ haveCap++; capSum += r.a.metrics.capRate; }
+  });
+  var cells = [
+    ['In review', rows.length + (units ? ' <small>/ ' + units + ' units</small>' : ''), ''],
+    ['Pursue', counts.pursue, 'is-pursue'],
+    ['Watch', counts.watch, 'is-watch'],
+    ['Pass', counts.pass + (counts.gap ? ' <small>+' + counts.gap + ' short on data</small>' : ''), 'is-pass'],
+    ['Capital at stake', money(capital, {compact:true}), ''],
+    ['Blended cap rate', haveCap ? pct(capSum/haveCap, 2) : '—', ''],
+    ['Year-1 cash flow', money(cf, {compact:true}), '']
+  ];
+  return '<div class="strip">' + cells.map(function(c){
+    return '<div class="stat ' + c[2] + '"><span class="eyebrow">' + c[0] + '</span><span class="v">' + c[1] + '</span></div>';
+  }).join('') + '</div>';
+}
+
+function renderToolbar(){
+  if (UI.meeting) return '';
+  var sorts = [['score','Score'],['capRate','Cap rate'],['cashflow','Cash flow'],['price','Price'],['added','Newest']];
+  var filters = [['live','Active'],['all','Everything'],['screening','Screening'],['reviewing','Under review'],['offer','Offer out'],['dead','Dead']];
+  return '<div class="toolbar hide-in-print">' +
+    '<div class="seg" role="group" aria-label="Sort deals">' +
+      sorts.map(function(s){
+        return '<button data-act="sort" data-v="' + s[0] + '" aria-pressed="' + (UI.sort === s[0]) + '">' + s[1] + '</button>';
+      }).join('') +
+    '</div>' +
+    '<label class="field-inline">Show' +
+      '<select class="mini" data-act="filter">' + filters.map(function(f){
+        return '<option value="' + f[0] + '"' + (UI.filter === f[0] ? ' selected' : '') + '>' + f[1] + '</option>';
+      }).join('') + '</select>' +
+    '</label>' +
+    '<span class="spacer"></span>' +
+    '<button class="btn btn-sm btn-ghost" data-act="export">' + ICON.down + 'Export CSV</button>' +
+  '</div>';
+}
+
+function headlineMetrics(a){
+  var m = a.metrics;
+  if (a.box === getBox().commercial || m.walt !== null || m.occupancy !== null){
+    return [
+      ['Cap', pct(m.capRate,2), false],
+      ['DSCR', mult(m.dscr), m.dscr !== null && m.dscr < 1.2],
+      ['Debt yield', pct(m.debtYield,1), false],
+      ['WALT', m.walt === null ? '—' : round(m.walt,1).toFixed(1) + ' yr', false],
+      ['Price', money(m.price,{compact:true}), false]
+    ];
+  }
+  return [
+    ['Cap', pct(m.capRate,2), false],
+    ['CoC', pct(m.coc,1), false],
+    ['DSCR', mult(m.dscr), m.dscr !== null && m.dscr < 1.2],
+    ['$/unit', m.pricePerUnit === null ? '—' : money(m.pricePerUnit,{compact:true}), false],
+    ['Price', money(m.price,{compact:true}), false]
+  ];
+}
+
+function renderDealRow(d, a, rank){
+  var open = UI.openId === d.id;
+  var sub = [];
+  if (d.address) sub.push(esc(d.address));
+  if (d.units)   sub.push(esc(d.units) + (Number(d.units) === 1 ? ' unit' : ' units'));
+  if (d.squareFeet) sub.push(Number(d.squareFeet).toLocaleString('en-US') + ' sf');
+  sub.push(ASSET_CLASSES[d.assetClass] || 'Multifamily');
+
+  var chips = '';
+  if (d.stage && d.stage !== 'screening') chips += '<span class="chip plain">' + esc(STAGES[d.stage] || d.stage) + '</span>';
+  if (d.sample) chips += '<span class="chip sample">sample</span>';
+
+  return '<article class="deal' + (open ? ' open' : '') + (d.stage === 'dead' ? ' dead' : '') + '" data-id="' + attr(d.id) + '">' +
+    '<button class="deal-head" data-act="toggle" data-id="' + attr(d.id) + '" aria-expanded="' + open + '">' +
+      '<span class="rank num">' + rank + '</span>' +
+      '<span class="identity">' +
+        '<h3>' + esc(d.name || 'Untitled deal') + '</h3>' +
+        '<span class="sub">' + sub.map(function(s,i){
+            return (i ? '<i class="dot"></i>' : '') + '<span>' + s + '</span>';
+          }).join('') + chips + '</span>' +
+      '</span>' +
+      '<span class="metrics">' + headlineMetrics(a).map(function(x){
+        return '<span class="metric' + (x[2] ? ' flag' : '') + '"><span class="k">' + x[0] + '</span>' +
+               '<span class="n' + (x[1] === '—' ? ' miss' : '') + '">' + x[1] + '</span></span>';
+      }).join('') + '</span>' +
+      '<span class="verdict">' +
+        '<span class="chip ' + a.verdict + '">' + VERDICT_LABEL[a.verdict] + '</span>' +
+        dial(a.score, a.verdict) +
+      '</span>' +
+    '</button>' +
+    (open ? renderDetail(d, a) : '') +
+  '</article>';
+}
+
+function renderDetail(d, a){
+  var m = a.metrics, box = a.box;
+
+  /* --- criteria breakdown --- */
+  var crit = a.rows.map(function(r){
+    var c = r.c;
+    var col = r.score === null ? 'var(--gap)'
+            : r.score >= 80 ? 'var(--pursue)'
+            : r.score >= 50 ? 'var(--watch)' : 'var(--pass)';
+    var w = r.score === null ? 0 : Math.max(2, r.score);
+    return '<div class="crit-row">' +
+      '<span class="lbl">' +
+        (c.gate ? '<span class="gate-mark' + (r.gateFailed ? ' failed' : '') + '" title="Hard requirement — a miss forces a Pass">GATE</span>' : '') +
+        '<span>' + esc(c.label) + '</span>' +
+      '</span>' +
+      '<span class="val' + (r.value === null ? ' miss' : '') + '">' + fmtMetric(r.value, c.unit) + '</span>' +
+      '<span class="track"><i style="width:' + w + '%;background:' + col + '"></i>' +
+        '<span class="marks"><u style="left:50%"></u><u style="left:80%"></u></span></span>' +
+      '<span class="pts">' + (r.score === null ? '—' : Math.round(r.score)) + '</span>' +
+    '</div>';
+  }).join('');
+
+  /* --- underwriting readout --- */
+  function cell(k, v, cls, full){
+    return '<div class="cell' + (cls ? ' ' + cls : '') + (full ? ' full' : '') + '">' +
+      '<span class="k">' + k + '</span><span class="v ' +
+      (v === '—' ? 'miss' : '') + '">' + v + '</span></div>';
+  }
+  var negCF = m.cashFlow !== null && m.cashFlow < 0;
+  var readout =
+    cell('Gross scheduled rent', money(m.gsr)) +
+    cell('Vacancy (' + pct(or(num(d.vacancyPct),5),1) + ')', m.vacancyLoss === null ? '—' : '(' + money(m.vacancyLoss) + ')') +
+    cell('Other income', money(m.otherIncome)) +
+    cell('Effective gross income', money(m.egi), 'rule') +
+    cell('Operating expenses', m.opex === null ? '—' : '(' + money(m.opex) + ')') +
+    cell('Net operating income', money(m.noi), 'rule') +
+    cell('Debt service', m.ads === null ? '—' : '(' + money(m.ads) + ')', '', true) +
+    '<div class="cell rule full"><span class="k">Year-1 cash flow</span><span class="v ' +
+      (m.cashFlow === null ? 'miss' : (negCF ? 'neg' : '')) + '">' + money(m.cashFlow) + '</span></div>' +
+    cell('Loan amount', money(m.loan)) +
+    cell('Cash to close', money(m.cashIn)) +
+    cell('All-in basis', money(m.allIn)) +
+    cell('Cap rate on basis', pct(m.capRateAllIn,2)) +
+    cell('GRM', m.grm === null ? '—' : round(m.grm,1).toFixed(1)) +
+    cell(m.units ? 'Cash flow / unit / mo' : 'Price / sf',
+         m.units ? money(m.cfPerUnitMo) : (m.pricePerSF === null ? '—' : '$' + round(m.pricePerSF,0)));
+
+  /* --- data gaps --- */
+  var gaps = '';
+  var missingLabels = a.unscored.map(function(r){ return r.c.label; });
+  if (m.missing.length || missingLabels.length){
+    var parts = [];
+    if (m.missing.length) parts.push('<b>Still needed:</b> ' + esc(m.missing.join(', ')) + '.');
+    if (missingLabels.length) parts.push('Not scored yet: ' + esc(missingLabels.join(', ')) +
+      ' — the score is weighted across the ' + Math.round(a.coverage*100) + '% of the buy box that could be measured.');
+    gaps = '<div class="gaps">' + parts.join(' ') + '</div>';
+  }
+  if (a.gatesFailed.length){
+    gaps = '<div class="gaps" style="background:var(--pass-soft);border-color:var(--pass);border-style:solid">' +
+      '<b>Fails a hard requirement:</b> ' + a.gatesFailed.map(function(c){
+        return esc(c.label) + ' must be ' + (c.dir === 'up' ? 'at least ' : 'no more than ') + fmtMetric(c.min, c.unit);
+      }).join('; ') + '. Scored deals that miss a gate are marked Pass regardless of total score.' +
+    '</div>' + gaps;
+  }
+
+  /* --- documents --- */
+  var docs = '';
+  var links = d.links || [];
+  if (links.length){
+    docs = '<div class="panel"><span class="eyebrow">Documents</span><div class="doclist">' +
+      links.map(function(l){
+        return '<div class="docrow">' + ICON.link + '<span class="nm"><a href="' + attr(l.url) +
+          '" target="_blank" rel="noopener noreferrer">' + esc(l.label || l.url) + '</a></span></div>';
+      }).join('') +
+    '</div></div>';
+  }
+
+  /* --- decision log --- */
+  var log = (d.log || []).slice().reverse();
+  var logHtml = '<div class="panel"><span class="eyebrow">Decision log</span>' +
+    (log.length
+      ? '<div class="log">' + log.map(function(e){
+          return '<div class="logrow"><span class="when">' + esc(shortDate(e.at)) + '</span>' +
+            '<span class="body"><span>' + (e.verdict ? '<span class="chip ' + e.verdict + '" style="margin-right:6px">' +
+              VERDICT_LABEL[e.verdict] + '</span>' : '') + esc(e.note || '') + '</span>' +
+            '<span class="who">' + esc(e.by || 'someone') + '</span></span></div>';
+        }).join('') + '</div>'
+      : '<p style="font-size:13px;color:var(--ink-3)">Nothing recorded yet. Log what the group decides so next week starts where this one ended.</p>') +
+    '</div>';
+
+  var notes = d.notes ? '<div class="panel"><span class="eyebrow">Notes</span><div class="notebox">' + esc(d.notes) + '</div></div>' : '';
+
+  var context = notes + docs + logHtml;
+
+  return '<div class="detail">' +
+    '<div class="detail-grid">' +
+      '<div class="panel">' +
+        '<span class="eyebrow">Scored against the ' + esc((ASSET_CLASSES[d.assetClass] || 'Multifamily').toLowerCase()) + ' buy box</span>' +
+        '<div class="crit">' + crit + '</div>' +
+        gaps +
+      '</div>' +
+      '<div class="panel"><span class="eyebrow">Underwriting</span><div class="readout">' + readout + '</div></div>' +
+    '</div>' +
+    (context ? '<div class="detail-band">' + context + '</div>' : '') +
+    '<div class="detail-actions hide-in-print">' +
+      '<button class="btn" data-act="edit" data-id="' + attr(d.id) + '">Edit deal</button>' +
+      '<button class="btn" data-act="decide" data-id="' + attr(d.id) + '">Record decision</button>' +
+      '<label class="field-inline">Stage' +
+        '<select class="mini" data-act="stage" data-id="' + attr(d.id) + '">' +
+          Object.keys(STAGES).map(function(k){
+            return '<option value="' + k + '"' + (d.stage === k ? ' selected' : '') + '>' + STAGES[k] + '</option>';
+          }).join('') +
+        '</select></label>' +
+      '<span class="spacer"></span>' +
+      '<button class="btn btn-danger btn-sm" data-act="delete" data-id="' + attr(d.id) + '">Delete</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function shortDate(ts){
+  if (!ts) return '';
+  var d = new Date(ts);
+  return d.toLocaleDateString('en-US', { month:'short', day:'numeric' }) +
+         (d.getFullYear() !== new Date().getFullYear() ? " '" + String(d.getFullYear()).slice(2) : '');
+}
+
+/* ===================================================================== FORM */
+
+function blankDeal(){
+  return {
+    id: 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2,7),
+    createdAt: Date.now(),
+    name:'', address:'', assetClass:'multifamily', stage:'screening', source:'',
+    units:'', squareFeet:'', yearBuilt:'',
+    askingPrice:'', offerPrice:'', capExImmediate:'', closingCostsPct:'2',
+    grossScheduledRent:'', otherIncome:'', vacancyPct:'5',
+    opExMode:'total', opExTotal:'',
+    taxes:'', insurance:'', utilities:'', repairs:'', management:'', adminOther:'', reserves:'',
+    downPct:'30', interestRate:'', amortYears:'30', interestOnly:false, loanFeesPct:'1',
+    occupancyPct:'', walt:'', tenantCount:'', largestTenantPct:'', leaseType:'',
+    links:[], notes:'', log:[]
+  };
+}
+
+function fNum(key, label, opts){
+  opts = opts || {};
+  var v = UI.editing[key];
+  var input = '<input type="text" inputmode="decimal" class="num-in" data-k="' + key + '" value="' + attr(v) + '"' +
+    (opts.placeholder ? ' placeholder="' + attr(opts.placeholder) + '"' : '') + '>';
+  var wrapped = opts.money ? '<span class="prefixed"><span>$</span>' + input + '</span>'
+              : opts.pct   ? '<span class="suffixed"><span>%</span>' + input + '</span>'
+              : input;
+  return '<div class="f' + (opts.wide ? ' wide' : '') + '"><label>' + label + '</label>' + wrapped +
+    (opts.hint ? '<span class="hint">' + opts.hint + '</span>' : '') + '</div>';
+}
+function fText(key, label, opts){
+  opts = opts || {};
+  return '<div class="f' + (opts.wide ? ' wide' : '') + '"><label>' + label + '</label>' +
+    '<input type="text" data-k="' + key + '" value="' + attr(UI.editing[key]) + '"' +
+    (opts.placeholder ? ' placeholder="' + attr(opts.placeholder) + '"' : '') + '>' +
+    (opts.hint ? '<span class="hint">' + opts.hint + '</span>' : '') + '</div>';
+}
+function fSelect(key, label, options, opts){
+  opts = opts || {};
+  return '<div class="f' + (opts.wide ? ' wide' : '') + '"><label>' + label + '</label>' +
+    '<select data-k="' + key + '">' + options.map(function(o){
+      return '<option value="' + attr(o[0]) + '"' + (String(UI.editing[key]) === String(o[0]) ? ' selected' : '') + '>' + esc(o[1]) + '</option>';
+    }).join('') + '</select></div>';
+}
+
+function renderForm(){
+  var d = UI.editing;
+  var isNew = !STATE.deals.some(function(x){ return x.id === d.id; });
+  var a = assess(d), m = a.metrics;
+  var commercial = d.assetClass === 'commercial';
+
+  var expenses = d.opExMode === 'itemized'
+    ? '<div class="fields">' +
+        fNum('taxes','Property taxes',{money:true}) +
+        fNum('insurance','Insurance',{money:true}) +
+        fNum('utilities','Utilities',{money:true}) +
+        fNum('repairs','Repairs & maintenance',{money:true}) +
+        fNum('management','Management',{money:true}) +
+        fNum('adminOther','Admin & other',{money:true}) +
+        fNum('reserves','Reserves',{money:true}) +
+      '</div>'
+    : '<div class="fields">' +
+        fNum('opExTotal','Total annual operating expenses',{money:true, wide:true,
+          hint:'Everything except debt service and capital improvements.'}) +
+      '</div>';
+
+  var commercialFields = commercial
+    ? '<fieldset><legend>Leases &amp; tenancy</legend><div class="fields">' +
+        fNum('occupancyPct','Occupancy',{pct:true}) +
+        fNum('walt','WALT',{placeholder:'years', hint:'Weighted average lease term remaining.'}) +
+        fNum('tenantCount','Tenant count') +
+        fNum('largestTenantPct','Largest tenant share of rent',{pct:true}) +
+        fSelect('leaseType','Lease structure',[['','—'],['nnn','Triple net (NNN)'],['modified','Modified gross'],['gross','Full service gross']]) +
+      '</div></fieldset>'
+    : '';
+
+  var links = (d.links || []).map(function(l, i){
+    return '<div class="fields" data-linkrow="' + i + '">' +
+      '<div class="f"><label>Label</label><input type="text" data-linkk="label" data-i="' + i + '" value="' + attr(l.label) + '" placeholder="Offering memorandum"></div>' +
+      '<div class="f"><label>URL</label><input type="text" data-linkk="url" data-i="' + i + '" value="' + attr(l.url) + '" placeholder="https://"></div>' +
+      '<div class="f" style="flex:none;justify-content:flex-end"><button type="button" class="btn btn-sm btn-danger" data-act="rmlink" data-i="' + i + '">Remove</button></div>' +
+    '</div>';
+  }).join('');
+
+  var railLines = commercial
+    ? [['Cap rate', pct(m.capRate,2)], ['DSCR', mult(m.dscr)], ['Debt yield', pct(m.debtYield,1)],
+       ['Cash-on-cash', pct(m.coc,1)], ['NOI', money(m.noi)], ['Year-1 cash flow', money(m.cashFlow), m.cashFlow !== null && m.cashFlow < 0]]
+    : [['Cap rate', pct(m.capRate,2)], ['Cash-on-cash', pct(m.coc,1)], ['DSCR', mult(m.dscr)],
+       ['NOI', money(m.noi)], ['Price / unit', money(m.pricePerUnit,{compact:true})],
+       ['Year-1 cash flow', money(m.cashFlow), m.cashFlow !== null && m.cashFlow < 0]];
+
+  return '<div class="scrim" data-act="scrim"><div class="sheet" role="dialog" aria-modal="true" aria-label="' +
+    (isNew ? 'Add a deal' : 'Edit deal') + '">' +
+    '<div class="sheet-head"><h2>' + (isNew ? 'Add a deal' : esc(d.name || 'Edit deal')) + '</h2>' +
+      '<button class="btn btn-ghost btn-sm" data-act="close">Cancel</button></div>' +
+    '<div class="sheet-body"><div class="form-grid"><div>' +
+
+      '<fieldset><legend>The property</legend><div class="fields">' +
+        fText('name','Deal name',{wide:true, placeholder:'Cedar Street Portfolio'}) +
+        fText('address','Address',{wide:true, placeholder:'1214 Cedar St, Austin TX'}) +
+        fSelect('assetClass','Asset class',[['multifamily','Multifamily / rentals'],['commercial','Commercial / mixed-use']]) +
+        fSelect('stage','Stage', Object.keys(STAGES).map(function(k){ return [k, STAGES[k]]; })) +
+        fNum('units','Units') +
+        fNum('squareFeet','Rentable sf') +
+        fNum('yearBuilt','Year built') +
+        fText('source','Source / broker',{placeholder:'Listing, off-market, broker name'}) +
+      '</div></fieldset>' +
+
+      '<fieldset><legend>Price &amp; basis</legend><div class="fields">' +
+        fNum('askingPrice','Asking price',{money:true}) +
+        fNum('offerPrice','Our offer',{money:true, hint:'Used instead of asking when set.'}) +
+        fNum('capExImmediate','Day-one capital',{money:true, hint:'Deferred maintenance and unit turns.'}) +
+        fNum('closingCostsPct','Closing costs',{pct:true}) +
+      '</div></fieldset>' +
+
+      '<fieldset><legend>Income</legend><div class="fields">' +
+        fNum('grossScheduledRent','Gross scheduled rent',{money:true, hint:'Annual, at full occupancy.'}) +
+        fNum('otherIncome','Other income',{money:true, hint:'Annual: parking, laundry, fees.'}) +
+        fNum('vacancyPct','Vacancy &amp; credit loss',{pct:true}) +
+      '</div></fieldset>' +
+
+      '<fieldset><legend>Operating expenses' +
+        '<span style="float:right;text-transform:none;letter-spacing:0;font-weight:500">' +
+          '<button type="button" class="btn btn-sm btn-ghost" data-act="opexmode">' +
+            (d.opExMode === 'itemized' ? 'Use a single total' : 'Itemize instead') + '</button></span>' +
+      '</legend>' + expenses + '</fieldset>' +
+
+      '<fieldset><legend>Financing</legend><div class="fields">' +
+        fNum('downPct','Down payment',{pct:true}) +
+        fNum('interestRate','Interest rate',{pct:true}) +
+        fNum('amortYears','Amortization',{placeholder:'years'}) +
+        fNum('loanFeesPct','Loan fees / points',{pct:true}) +
+        '<div class="f wide"><label class="check"><input type="checkbox" data-k="interestOnly"' +
+          (d.interestOnly ? ' checked' : '') + '> Interest-only</label></div>' +
+      '</div></fieldset>' +
+
+      commercialFields +
+
+      '<fieldset><legend>Documents</legend>' +
+        '<span class="hint" style="font-size:11.5px;color:var(--ink-3)">Link the offering memo, rent roll and T-12 where they already live. ' +
+        'Anything bigger than a link stays where it is — Drive, Dropbox, the broker&#39;s portal.</span>' +
+        links +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:2px">' +
+          '<button type="button" class="btn btn-sm" data-act="addlink">' + ICON.link + 'Add a link</button>' +
+        '</div>' +
+      '</fieldset>' +
+
+      '<fieldset><legend>Notes</legend><div class="fields">' +
+        '<div class="f wide"><textarea data-k="notes" placeholder="What the group should know: condition, seller motivation, the thing that worries you.">' +
+          esc(d.notes) + '</textarea></div>' +
+      '</div></fieldset>' +
+
+    '</div>' +
+
+    '<aside class="rail"><span class="eyebrow">Live read</span>' +
+      '<div class="rail-score">' + dial(a.score, a.verdict, 54) +
+        '<div><span class="chip ' + a.verdict + '">' + VERDICT_LABEL[a.verdict] + '</span>' +
+        '<div style="font-size:11.5px;color:var(--ink-3);margin-top:5px">' +
+          (a.score === null ? 'Fill in price, rent and expenses' : Math.round(a.coverage*100) + '% of the buy box measurable') +
+        '</div></div></div>' +
+      '<div class="rail-lines">' + railLines.map(function(l){
+        return '<div class="ln"><span class="k">' + l[0] + '</span><span class="v' +
+          (l[1] === '—' ? ' miss' : (l[2] ? ' neg' : '')) + '">' + l[1] + '</span></div>';
+      }).join('') + '</div>' +
+      (a.gatesFailed.length ? '<div class="gaps" style="background:var(--pass-soft);border-color:var(--pass);border-style:solid;font-size:11.5px">' +
+        'Misses a hard requirement: ' + esc(a.gatesFailed.map(function(c){ return c.label; }).join(', ')) + '</div>' : '') +
+    '</aside>' +
+
+    '</div></div>' +
+    '<div class="sheet-foot">' +
+      '<button class="btn btn-primary" data-act="save">' + (isNew ? 'Add to the board' : 'Save changes') + '</button>' +
+      '<button class="btn btn-ghost" data-act="close">Cancel</button>' +
+      '<span class="spacer"></span>' +
+      '<span style="font-size:12px;color:var(--ink-3)">Everyone on the link sees this immediately.</span>' +
+    '</div>' +
+  '</div></div>';
+}
+
+/* ============================================================== BUY BOX EDIT */
+
+function renderBuyBox(){
+  var box = UI.boxDraft || getBox();
+  var tab = UI.boxTab;
+  var b = box[tab];
+  var total = b.criteria.reduce(function(a,c){ return a + (num(c.weight) || 0); }, 0);
+
+  var rows = b.criteria.map(function(c, i){
+    var u = c.unit === 'x' ? '×' : c.unit === 'yr' ? 'yr' : c.unit;
+    return '<tr>' +
+      '<td>' + esc(c.label) + ' <span style="color:var(--ink-3);font-family:var(--mono);font-size:11px">' +
+        (c.dir === 'up' ? 'higher better' : 'lower better') + '</span></td>' +
+      ['fail','min','target','stretch','weight'].map(function(k){
+        return '<td><input type="text" inputmode="decimal" data-boxk="' + k + '" data-i="' + i +
+          '" value="' + attr(c[k]) + '" aria-label="' + attr(c.label + ' ' + k) + '"></td>';
+      }).join('') +
+      '<td class="gatecell"><input type="checkbox" data-boxk="gate" data-i="' + i + '"' +
+        (c.gate ? ' checked' : '') + ' aria-label="' + attr(c.label + ' is a hard requirement') + '"></td>' +
+      '<td style="color:var(--ink-3);font-family:var(--mono);font-size:11.5px;text-align:right">' + esc(u) + '</td>' +
+    '</tr>';
+  }).join('');
+
+  return '<div class="scrim" data-act="scrim"><div class="sheet" role="dialog" aria-modal="true" aria-label="Buy box">' +
+    '<div class="sheet-head"><h2>Buy box</h2>' +
+      '<button class="btn btn-ghost btn-sm" data-act="close">Close</button></div>' +
+    '<div class="sheet-body">' +
+      '<p style="font-size:13.5px;color:var(--ink-2);max-width:66ch">' +
+        'Every deal is scored against these numbers. <b>Fail</b> scores 0, <b>minimum</b> scores 50, ' +
+        '<b>target</b> scores 80 and <b>stretch</b> scores 100, with straight-line interpolation in between. ' +
+        'Weights set how much each criterion moves the total. A criterion marked <b>gate</b> is a hard requirement — ' +
+        'a deal that misses it is marked Pass no matter how well it scores elsewhere.' +
+      '</p>' +
+      '<div class="box-tabs" role="group" aria-label="Asset class">' +
+        Object.keys(ASSET_CLASSES).map(function(k){
+          return '<button data-act="boxtab" data-v="' + k + '" aria-pressed="' + (tab === k) + '">' + ASSET_CLASSES[k] + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="box-scroll"><table class="box-table"><thead><tr>' +
+        '<th>Criterion</th><th>Fail</th><th>Minimum</th><th>Target</th><th>Stretch</th><th>Weight</th><th>Gate</th><th></th>' +
+      '</tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      '<div style="display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end">' +
+        '<div class="f" style="max-width:130px"><label>Pursue at or above</label>' +
+          '<input type="text" inputmode="decimal" class="num-in" data-boxv="pursue" value="' + attr(b.pursue) + '"></div>' +
+        '<div class="f" style="max-width:130px"><label>Watch at or above</label>' +
+          '<input type="text" inputmode="decimal" class="num-in" data-boxv="watch" value="' + attr(b.watch) + '"></div>' +
+        '<span class="wsum' + (Math.round(total) !== 100 ? ' bad' : '') + '">Weights total ' + round(total,1) +
+          (Math.round(total) !== 100 ? ' — they need not sum to 100, but scores are easier to read when they do' : '') + '</span>' +
+      '</div>' +
+    '</div>' +
+    '<div class="sheet-foot">' +
+      '<button class="btn btn-primary" data-act="savebox">Save buy box</button>' +
+      '<button class="btn btn-ghost" data-act="close">Cancel</button>' +
+      '<span class="spacer"></span>' +
+      '<button class="btn btn-sm btn-ghost btn-danger" data-act="resetbox">Reset to defaults</button>' +
+    '</div>' +
+  '</div></div>';
+}
+
+/* ============================================================ DECISION MODAL */
+
+function renderAccess(){
+  var remembered = !!local('pass-persist');
+  return '<div class="scrim" data-act="scrim"><div class="sheet narrow" role="dialog" aria-modal="true" aria-label="Access">' +
+    '<div class="sheet-head"><h2>Access</h2>' +
+      '<button class="btn btn-ghost btn-sm" data-act="close">Close</button></div>' +
+    '<div class="sheet-body">' +
+      '<div>' +
+        '<p style="font-size:13.5px;color:var(--ink-2);line-height:1.6">' +
+          'The passphrase is the encryption key. Everything on this board is encrypted in the browser ' +
+          'before it is stored, so the passphrase is the only way in — and there is no per-person revocation. ' +
+          'When someone leaves the team, change it here and tell everyone else the new one.</p>' +
+      '</div>' +
+      '<fieldset><legend>Change the passphrase</legend><div class="fields">' +
+        '<div class="f wide"><label for="np">New passphrase</label>' +
+          '<input type="password" id="np" autocomplete="new-password" spellcheck="false"></div>' +
+        '<div class="f wide"><label for="np2">Confirm it</label>' +
+          '<input type="password" id="np2" autocomplete="new-password" spellcheck="false"></div>' +
+        '<div class="f wide"><span class="hint">The board is re-encrypted under the new passphrase and the old ' +
+          'copy is deleted. Anyone still holding the old one loses access immediately.</span></div>' +
+      '</div></fieldset>' +
+      '<fieldset><legend>This device</legend><div class="fields">' +
+        '<div class="f wide"><span class="hint">' +
+          (remembered
+            ? 'This browser stays unlocked between visits.'
+            : 'This browser forgets the passphrase when the tab closes.') +
+        '</span></div>' +
+      '</div></fieldset>' +
+    '</div>' +
+    '<div class="sheet-foot">' +
+      '<button class="btn btn-primary" data-act="dochangepass">Change passphrase</button>' +
+      '<span class="spacer"></span>' +
+      '<button class="btn" data-act="lock">' + ICON.lock + 'Lock this device</button>' +
+    '</div>' +
+  '</div></div>';
+}
+
+function renderDecide(){
+  var d = dealById(UI.decideId);
+  if (!d) return '';
+  var a = assess(d);
+  return '<div class="scrim" data-act="scrim"><div class="sheet narrow" role="dialog" aria-modal="true" aria-label="Record a decision">' +
+    '<div class="sheet-head"><h2>Record a decision</h2>' +
+      '<button class="btn btn-ghost btn-sm" data-act="close">Cancel</button></div>' +
+    '<div class="sheet-body">' +
+      '<p style="font-size:13.5px;color:var(--ink-2)">' + esc(d.name || 'This deal') +
+        ' currently scores <b class="num">' + (a.score === null ? '–' : Math.round(a.score)) +
+        '</b> and reads as <b>' + VERDICT_LABEL[a.verdict] + '</b>. What did the group land on?</p>' +
+      '<div class="fields">' +
+        '<div class="f"><label>Call</label><select id="dec-verdict">' +
+          [['pursue','Pursue'],['watch','Watch'],['pass','Pass'],['','No call yet']].map(function(o){
+            return '<option value="' + o[0] + '"' + (o[0] === a.verdict ? ' selected' : '') + '>' + o[1] + '</option>';
+          }).join('') + '</select></div>' +
+        '<div class="f"><label>Move to stage</label><select id="dec-stage">' +
+          Object.keys(STAGES).map(function(k){
+            return '<option value="' + k + '"' + (d.stage === k ? ' selected' : '') + '>' + STAGES[k] + '</option>';
+          }).join('') + '</select></div>' +
+        '<div class="f wide"><label>Your name</label><input type="text" id="dec-by" value="' + attr(whoami()) +
+          '" placeholder="So next week knows who said it"></div>' +
+        '<div class="f wide"><label>What was decided, and why</label>' +
+          '<textarea id="dec-note" placeholder="Passed — seller will not move off 6.2 and our gate is 1.25 DSCR at today’s rate."></textarea></div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="sheet-foot"><button class="btn btn-primary" data-act="savedecision">Record it</button>' +
+      '<button class="btn btn-ghost" data-act="close">Cancel</button></div>' +
+  '</div></div>';
+}
+
+/* ==================================================================== RENDER */
+
+function dealById(id){
+  for (var i=0; i<STATE.deals.length; i++) if (STATE.deals[i].id === id) return STATE.deals[i];
+  return null;
+}
+
+function renderBoard(){
+  var rows = visibleDeals();
+  var out = '';
+
+  if (READONLY){
+    out += '<div class="banner">' + ICON.warn +
+      '<span>You are viewing this board. Edits will not be saved — ask whoever shared the link for edit access.</span></div>';
+  } else if (UI.dirty){
+    out += '<div class="banner">' + ICON.warn +
+      '<span>The last change was not saved to the shared board yet. It will retry on your next edit.</span></div>';
+  }
+
+  if (UI.meeting){
+    out += '<div class="meeting-note">' + ICON.present +
+      '<span>Meeting mode — ' + rows.length + ' deal' + (rows.length === 1 ? '' : 's') +
+      ' ranked by score. Click any deal to open the underwriting.</span></div>';
+  }
+
+  if (!STATE.deals.length){
+    out += '<div class="empty">' +
+      '<h2>No deals on the board yet</h2>' +
+      '<p>Add a deal and it is scored against your buy box the moment you have a price, a rent roll and an expense number. ' +
+      'Everyone with the link sees the same board.</p>' +
+      '<div class="row">' +
+        '<button class="btn btn-primary" data-act="new">' + ICON.plus + 'Add the first deal</button>' +
+        '<button class="btn" data-act="buybox">' + ICON.sliders + 'Set the buy box first</button>' +
+        '<button class="btn btn-ghost" data-act="samples">Load two examples</button>' +
+      '</div>' +
+    '</div>';
+    return out;
+  }
+
+  out += renderStrip(rows) + renderToolbar();
+
+  if (!rows.length){
+    out += '<div class="empty"><h2>Nothing in this view</h2>' +
+      '<p>No deals match the filter. Switch <b>Show</b> back to Everything to see the rest of the pipeline.</p></div>';
+    return out;
+  }
+
+  out += '<div class="ledger">' + rows.map(function(r, i){
+    return renderDealRow(r.d, r.a, i+1);
+  }).join('') + '</div>';
+  return out;
+}
+
+function render(){
+  renderTopbar();
+  document.body.classList.toggle('meeting', UI.meeting);
+  document.getElementById('app').innerHTML = renderBoard();
+  var mod = document.getElementById('modal');
+  if (mod){
+    mod.innerHTML = UI.view === 'form'   ? renderForm()
+                  : UI.view === 'buybox' ? renderBuyBox()
+                  : UI.view === 'decide' ? renderDecide()
+                  : UI.view === 'access' ? renderAccess() : '';
+    var gate = document.getElementById('gate');
+    if (!gate || gate.hidden) document.body.style.overflow = UI.view === 'board' ? '' : 'hidden';
+  }
+}
+
+/* refresh only the live-read rail so typing never loses focus */
+function refreshRail(){
+  var rail = document.querySelector('.rail');
+  if (!rail || !UI.editing) return;
+  var scrollTop = document.querySelector('.scrim').scrollTop;
+  var html = renderForm();
+  var tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  var fresh = tmp.querySelector('.rail');
+  if (fresh) rail.innerHTML = fresh.innerHTML;
+  document.querySelector('.scrim').scrollTop = scrollTop;
+}
+
+/* ============================================================== ATTACHMENTS */
+
+
+
+
+
+/* ================================================================= CSV EXPORT */
+
+function exportCsv(){
+  var cols = [
+    ['Deal','name'], ['Address','address'], ['Asset class','assetClass'], ['Stage','stage'],
+    ['Units','units'], ['Sf','squareFeet'], ['Price','price'], ['All-in basis','allIn'],
+    ['NOI','noi'], ['Cap rate %','capRate'], ['Cash-on-cash %','coc'], ['DSCR','dscr'],
+    ['Debt yield %','debtYield'], ['Expense ratio %','expenseRatio'], ['Break-even occ %','breakEvenOcc'],
+    ['Price/unit','pricePerUnit'], ['Year-1 cash flow','cashFlow'], ['Score','__score'], ['Verdict','__verdict']
+  ];
+  function cell(v){
+    if (v === null || v === undefined) return '';
+    var s = String(v);
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s;
+  }
+  var lines = [cols.map(function(c){ return cell(c[0]); }).join(',')];
+  visibleDeals().forEach(function(r){
+    lines.push(cols.map(function(c){
+      var k = c[1];
+      if (k === '__score')   return cell(r.a.score === null ? '' : Math.round(r.a.score));
+      if (k === '__verdict') return cell(VERDICT_LABEL[r.a.verdict]);
+      if (k in r.a.metrics)  return cell(r.a.metrics[k] === null ? '' : round(r.a.metrics[k], 2));
+      if (k === 'assetClass') return cell(ASSET_CLASSES[r.d.assetClass] || '');
+      if (k === 'stage')      return cell(STAGES[r.d.stage] || '');
+      return cell(r.d[k]);
+    }).join(','));
+  });
+  var csv = lines.join('\n');
+  var name = 'deal-room-' + new Date().toISOString().slice(0,10) + '.csv';
+
+  if (download(name, 'text/csv;charset=utf-8', csv)) toast('Exported ' + name);
+  else toast('Your browser blocked the download', 'err');
+}
+
+/* ==================================================================== SAMPLES */
+
+function sampleDeals(){
+  var now = Date.now();
+  return [
+    {
+      id:'sample-cedar', createdAt: now, sample:true,
+      name:'Cedar Street Portfolio', address:'1214 Cedar St, Austin TX',
+      assetClass:'multifamily', stage:'reviewing', source:'Off-market, Rivera Group',
+      units:'24', squareFeet:'19800', yearBuilt:'1986',
+      askingPrice:'3250000', offerPrice:'3150000', capExImmediate:'85000', closingCostsPct:'2',
+      grossScheduledRent:'396000', otherIncome:'9600', vacancyPct:'6',
+      opExMode:'itemized', opExTotal:'',
+      taxes:'52000', insurance:'18500', utilities:'21000', repairs:'26000',
+      management:'19100', adminOther:'9400', reserves:'12000',
+      downPct:'30', interestRate:'6.5', amortYears:'30', interestOnly:false, loanFeesPct:'1',
+      occupancyPct:'', walt:'', tenantCount:'', largestTenantPct:'', leaseType:'',
+      links:[],
+      notes:'Rents are roughly $180/mo under market on 16 of 24 units. Seller will not carry. Roof was replaced in 2021; boilers are original.',
+      log:[{ at: now - 86400000*6, by:'Sample data', verdict:'watch', note:'Walked the property. Asked the broker for a T-12 and the current rent roll before we underwrite the upside.' }]
+    },
+    {
+      id:'sample-overton', createdAt: now - 1000, sample:true,
+      name:'Overton Retail Row', address:'800 Overton Ave, Memphis TN',
+      assetClass:'commercial', stage:'screening', source:'Listed — Marcus & Co',
+      units:'6', squareFeet:'18400', yearBuilt:'2004',
+      askingPrice:'2650000', offerPrice:'', capExImmediate:'40000', closingCostsPct:'2',
+      grossScheduledRent:'248000', otherIncome:'', vacancyPct:'4',
+      opExMode:'total', opExTotal:'61000',
+      downPct:'40', interestRate:'7.1', amortYears:'25', interestOnly:false, loanFeesPct:'1',
+      occupancyPct:'92', walt:'5.4', tenantCount:'6', largestTenantPct:'34', leaseType:'nnn',
+      links:[],
+      notes:'Anchor is a regional pharmacy with 5 years left and one 5-year option. Two suites roll inside 18 months — that is the real question on this one.',
+      log:[]
+    }
+  ];
+}
+
+/* ==================================================================== EVENTS */
+
+function closeModal(){
+  UI.view = 'board'; UI.editing = null; UI.boxDraft = null; UI.decideId = null;
+  render();
+}
+
+function openForm(deal){
+  UI.editing = deal ? JSON.parse(JSON.stringify(deal)) : blankDeal();
+  UI.editing.links = UI.editing.links || [];
+  UI.view = 'form';
+  render();
+}
+
+function saveDeal(){
+  var d = UI.editing;
+  if (!d.name || !String(d.name).trim()){
+    toast('Give the deal a name so the group can find it', 'warn');
+    var el = document.querySelector('[data-k="name"]');
+    if (el) el.focus();
+    return;
+  }
+  d.updatedAt = Date.now();
+  var i = -1;
+  for (var j=0; j<STATE.deals.length; j++) if (STATE.deals[j].id === d.id) i = j;
+  if (i >= 0) STATE.deals[i] = d; else STATE.deals.push(d);
+  var name = d.name;
+  UI.openId = d.id;
+  closeModal();
+  persist(i >= 0 ? 'Saved ' + name : 'Added ' + name);
+}
+
+var ACTIONS = {
+  'new':        function(){ openForm(null); },
+  'edit':       function(el){ var d = dealById(el.getAttribute('data-id')); if (d) openForm(d); },
+  'close':      closeModal,
+  'scrim':      function(el, ev){ if (ev.target === el) closeModal(); },
+  'save':       saveDeal,
+  'access':     function(){ UI.view = 'access'; render(); },
+  'lock':       function(){ closeModal(); lockBoard(); },
+  'dochangepass': function(){
+    var a = document.getElementById('np'), b = document.getElementById('np2');
+    changePassphrase(a ? a.value : '', b ? b.value : '');
+  },
+  'buybox':     function(){ UI.boxDraft = JSON.parse(JSON.stringify(getBox())); UI.view = 'buybox'; render(); },
+  'boxtab':     function(el){ UI.boxTab = el.getAttribute('data-v'); render(); },
+  'meeting-on': function(){ UI.meeting = true; UI.openId = null; render(); },
+  'meeting-off':function(){ UI.meeting = false; render(); },
+  'sort':       function(el){ UI.sort = el.getAttribute('data-v'); render(); },
+  'export':     exportCsv,
+  'samples':    function(){ STATE.deals = sampleDeals(); persist('Loaded two examples'); },
+  'opexmode':   function(){
+                  UI.editing.opExMode = UI.editing.opExMode === 'itemized' ? 'total' : 'itemized';
+                  render();
+                },
+  'addlink':    function(){ UI.editing.links.push({label:'', url:''}); render(); },
+  'rmlink':     function(el){ UI.editing.links.splice(Number(el.getAttribute('data-i')), 1); render(); },
+
+  'toggle':     function(el){
+                  var id = el.getAttribute('data-id');
+                  UI.openId = UI.openId === id ? null : id;
+                  render();
+                },
+
+  'decide':     function(el){ UI.decideId = el.getAttribute('data-id'); UI.view = 'decide'; render(); },
+
+  'savedecision': function(){
+                  var d = dealById(UI.decideId);
+                  if (!d) return closeModal();
+                  var verdict = document.getElementById('dec-verdict').value;
+                  var stage   = document.getElementById('dec-stage').value;
+                  var by      = document.getElementById('dec-by').value.trim();
+                  var note    = document.getElementById('dec-note').value.trim();
+                  if (by) local('who', by);
+                  d.log = d.log || [];
+                  d.log.push({ at: Date.now(), by: by || 'Anonymous', verdict: verdict || '', note: note });
+                  d.stage = stage;
+                  var name = d.name;
+                  UI.openId = d.id;
+                  closeModal();
+                  persist('Decision recorded for ' + name);
+                },
+
+  'delete':     function(el){
+                  var id = el.getAttribute('data-id'), d = dealById(id);
+                  if (!d) return;
+                  if (!window.confirm('Delete "' + (d.name || 'this deal') + '" for everyone on this board? This cannot be undone.')) return;
+                  STATE.deals = STATE.deals.filter(function(x){ return x.id !== id; });
+                  if (UI.openId === id) UI.openId = null;
+                  persist('Deleted ' + (d.name || 'the deal'));
+                },
+
+  'savebox':    function(){
+                  STATE.buyBox = UI.boxDraft;
+                  closeModal();
+                  persist('Buy box saved — every deal rescored');
+                },
+  'resetbox':   function(){
+                  if (!window.confirm('Reset both buy boxes to the built-in defaults?')) return;
+                  UI.boxDraft = defaultBuyBox();
+                  render();
+                }
+};
+
+function wire(){
+  document.addEventListener('click', function(ev){
+    var el = ev.target.closest('[data-act]');
+    if (!el) return;
+    var act = el.getAttribute('data-act');
+    if (act === 'scrim' && ev.target !== el) return;
+    var fn = ACTIONS[act];
+    if (!fn) return;
+    ev.preventDefault();
+    fn(el, ev);
+  });
+
+  document.addEventListener('input', function(ev){
+    var t = ev.target;
+
+    /* deal form fields */
+    var k = t.getAttribute && t.getAttribute('data-k');
+    if (k && UI.editing){
+      UI.editing[k] = t.type === 'checkbox' ? t.checked : t.value;
+      if (k === 'assetClass') render(); else refreshRail();
+      return;
+    }
+
+    /* document links */
+    var lk = t.getAttribute && t.getAttribute('data-linkk');
+    if (lk && UI.editing){
+      var i = Number(t.getAttribute('data-i'));
+      if (UI.editing.links[i]) UI.editing.links[i][lk] = t.value;
+      return;
+    }
+
+    /* buy box criteria */
+    var bk = t.getAttribute && t.getAttribute('data-boxk');
+    if (bk && UI.boxDraft){
+      var row = UI.boxDraft[UI.boxTab].criteria[Number(t.getAttribute('data-i'))];
+      if (!row) return;
+      row[bk] = bk === 'gate' ? t.checked : (num(t.value) === null ? row[bk] : num(t.value));
+      var total = UI.boxDraft[UI.boxTab].criteria.reduce(function(a,c){ return a + (num(c.weight) || 0); }, 0);
+      var sum = document.querySelector('.wsum');
+      if (sum){
+        sum.textContent = 'Weights total ' + round(total,1) +
+          (Math.round(total) !== 100 ? ' — they need not sum to 100, but scores are easier to read when they do' : '');
+        sum.className = 'wsum' + (Math.round(total) !== 100 ? ' bad' : '');
+      }
+      return;
+    }
+
+    /* buy box verdict cutoffs */
+    var bv = t.getAttribute && t.getAttribute('data-boxv');
+    if (bv && UI.boxDraft){
+      var v = num(t.value);
+      if (v !== null) UI.boxDraft[UI.boxTab][bv] = v;
+      return;
+    }
+  });
+
+  document.addEventListener('change', function(ev){
+    var t = ev.target;
+    var act = t.getAttribute && t.getAttribute('data-act');
+    if (act === 'filter'){ UI.filter = t.value; render(); return; }
+    if (act === 'stage'){
+      var d = dealById(t.getAttribute('data-id'));
+      if (d){ d.stage = t.value; persist('Moved to ' + STAGES[t.value]); }
+      return;
+    }
+  });
+
+  document.addEventListener('keydown', function(ev){
+    if (ev.key === 'Escape' && UI.view !== 'board'){ ev.preventDefault(); closeModal(); }
+    if (ev.key === 'Escape' && UI.view === 'board' && UI.meeting){ UI.meeting = false; render(); }
+  });
+
+  window.addEventListener('beforeunload', function(){ if (savePending !== null) flush(); });
+}
+
+/* ====================================================================== BOOT */
+
+
+
+/* ====================================================================== GATE */
+
+var GATE = { el:null, msg:null, pass:null, confirm:null, confirmWrap:null,
+             go:null, create:null, remember:null, lede:null, busy:false, mode:'unlock' };
+
+function gateEls(){
+  GATE.el          = document.getElementById('gate');
+  GATE.msg         = document.getElementById('gate-msg');
+  GATE.pass        = document.getElementById('gate-pass');
+  GATE.confirm     = document.getElementById('gate-confirm');
+  GATE.confirmWrap = document.getElementById('gate-confirm-wrap');
+  GATE.go          = document.getElementById('gate-go');
+  GATE.create      = document.getElementById('gate-create');
+  GATE.remember    = document.getElementById('gate-remember');
+  GATE.lede        = document.getElementById('gate-lede');
+}
+
+function gateSay(text, kind){
+  GATE.msg.innerHTML = text ? '<div class="gate-msg ' + (kind || 'info') + '">' + text + '</div>' : '';
+}
+function gateBusy(on, label){
+  GATE.busy = on;
+  GATE.go.disabled = on;
+  GATE.create.disabled = on;
+  if (on) gateSay('<span class="gate-busy"><span class="spinner"></span>' + esc(label || 'Working…') + '</span>', 'info');
+}
+function showGate(){
+  document.body.style.overflow = 'hidden';
+  GATE.el.hidden = false;
+  setTimeout(function(){ GATE.pass.focus(); }, 30);
+}
+function hideGate(){
+  document.body.style.overflow = '';
+  GATE.el.hidden = true;
+  GATE.pass.value = '';
+  if (GATE.confirm) GATE.confirm.value = '';
+}
+
+function rememberPass(p, persistIt){
+  try {
+    (persistIt ? localStorage : sessionStorage).setItem('dealroom:pass', p);
+  } catch(e){}
+}
+function recallPass(){
+  try {
+    return sessionStorage.getItem('dealroom:pass') || localStorage.getItem('dealroom:pass') || '';
+  } catch(e){ return ''; }
+}
+function forgetPass(){
+  try { sessionStorage.removeItem('dealroom:pass'); localStorage.removeItem('dealroom:pass'); } catch(e){}
+}
+
+/* Entering the board: decrypt, render, then keep listening for teammates. */
+var unwatch = null;
+
+function enterBoard(room, state, pass, persistIt){
+  ROOM = room;
+  STATE = state;
+  rememberPass(pass, persistIt);
+  hideGate();
+  render();
+  if (unwatch) unwatch();
+  unwatch = window.DealStore.watch(room, onRemoteState, function(err){
+    toast('Live updates stopped: ' + friendlyError(err), 'warn');
+  });
+}
+
+function attemptUnlock(pass, opts){
+  opts = opts || {};
+  if (!pass || pass.length < 8){
+    gateSay('Use at least 8 characters. This passphrase is the encryption key — a short one is guessable.', 'err');
+    return;
+  }
+  gateBusy(true, 'Deriving key…');
+
+  window.DealStore.derive(pass).then(function(room){
+    gateBusy(true, 'Opening board…');
+    return window.DealStore.load(room).then(function(state){
+      if (state){
+        gateBusy(false);
+        enterBoard(room, normalizeState(state), pass, GATE.remember.checked);
+        return;
+      }
+      if (opts.create){
+        gateBusy(true, 'Creating board…');
+        var fresh = blankState();
+        return window.DealStore.save(room, fresh, SAVE_TOKEN).then(function(){
+          gateBusy(false);
+          enterBoard(room, fresh, pass, GATE.remember.checked);
+          toast('Board created — share the passphrase with your team');
+        });
+      }
+      gateBusy(false);
+      GATE.mode = 'confirm';
+      GATE.confirmWrap.hidden = false;
+      GATE.create.hidden = false;
+      GATE.go.textContent = 'Try again';
+      gateSay('No board found for that passphrase. If this is your first time, confirm it below and create one — ' +
+              'otherwise check for a typo, because a wrong passphrase looks exactly like an empty board.', 'warn');
+    });
+  }).catch(function(err){
+    gateBusy(false);
+    var code = (err && (err.code || err.message)) || '';
+    if (code === 'anonymous-auth-off'){
+      gateSay('Firebase is rejecting sign-in. Turn on <b>Anonymous</b> under Authentication → Sign-in method in the Firebase console.', 'err');
+    } else if (code === 'undecryptable'){
+      gateSay('Found a board but could not decrypt it. That normally means the stored data was written by a different version.', 'err');
+    } else if (/permission-denied/.test(code)){
+      gateSay('The database refused the request. Deploy the Firestore rules from this repo (<code>firebase deploy --only firestore:rules</code>).', 'err');
+    } else {
+      gateSay('Could not open the board: ' + esc(String(code)), 'err');
+    }
+  });
+}
+
+function normalizeState(s){
+  if (!s || typeof s !== 'object') return blankState();
+  return {
+    v: 1,
+    deals: Array.isArray(s.deals) ? s.deals : [],
+    buyBox: s.buyBox || null,
+    meta: s.meta || {}
+  };
+}
+
+function wireGate(){
+  gateEls();
+
+  document.getElementById('gate-form').addEventListener('submit', function(ev){
+    ev.preventDefault();
+    if (GATE.busy) return;
+    attemptUnlock(GATE.pass.value, { create:false });
+  });
+
+  GATE.create.addEventListener('click', function(){
+    if (GATE.busy) return;
+    var p = GATE.pass.value, c = GATE.confirm.value;
+    if (p !== c){
+      gateSay('The two passphrases do not match.', 'err');
+      return;
+    }
+    attemptUnlock(p, { create:true });
+  });
+
+  GATE.pass.addEventListener('input', function(){
+    if (GATE.mode === 'confirm'){
+      GATE.mode = 'unlock';
+      GATE.confirmWrap.hidden = true;
+      GATE.create.hidden = true;
+      GATE.go.textContent = 'Unlock';
+      gateSay('');
+    }
+  });
+}
+
+function lockBoard(){
+  forgetPass();
+  if (unwatch){ unwatch(); unwatch = null; }
+  ROOM = null;
+  STATE = blankState();
+  render();
+  GATE.mode = 'unlock';
+  GATE.confirmWrap.hidden = true;
+  GATE.create.hidden = true;
+  GATE.go.textContent = 'Unlock';
+  gateSay('');
+  showGate();
+}
+
+function changePassphrase(next, confirmNext){
+  if (!ROOM) return;
+  if (next !== confirmNext){ toast('The two passphrases do not match', 'err'); return; }
+  if (!next || next.length < 8){ toast('Use at least 8 characters', 'err'); return; }
+
+  toast('Re-encrypting the board…');
+  window.DealStore.derive(next).then(function(newRoom){
+    if (newRoom.id === ROOM.id){ toast('That is already the passphrase'); return; }
+    return window.DealStore.exists(newRoom).then(function(taken){
+      if (taken) throw new Error('A board already exists at that passphrase — pick another');
+      return window.DealStore.rekey(ROOM, newRoom, STATE, SAVE_TOKEN).then(function(){
+        var old = ROOM;
+        ROOM = newRoom;
+        rememberPass(next, !!local('pass'));
+        if (unwatch) unwatch();
+        unwatch = window.DealStore.watch(newRoom, onRemoteState);
+        closeModal();
+        toast('Passphrase changed — everyone else needs the new one');
+      });
+    });
+  }).catch(function(err){
+    toast(String((err && err.message) || err), 'err');
+  });
+}
+
+/* ====================================================================== BOOT */
+
+function startGate(){
+  if (!window.DealStore){
+    gateSay('The app could not load its database layer. Check the browser console for a blocked script.', 'err');
+    showGate();
+    return;
+  }
+  if (window.DealStore.initError === 'unconfigured'){
+    GATE.lede.textContent = 'This deployment has no Firebase project attached yet.';
+    gateSay('Open <code>config.js</code> and paste the Firebase web config for your project. ' +
+            'The README in this repo walks through it step by step.', 'warn');
+    GATE.go.disabled = true;
+    showGate();
+    return;
+  }
+  if (window.DealStore.initError){
+    gateSay('Firebase failed to start: ' + esc(window.DealStore.initError), 'err');
+    showGate();
+    return;
+  }
+
+  var saved = recallPass();
+  if (saved){
+    GATE.remember.checked = !!local('pass') || true;
+    showGate();
+    gateBusy(true, 'Unlocking…');
+    attemptUnlock(saved, { create:false });
+    return;
+  }
+  showGate();
+}
+
+function boot(){
+  STATE = blankState();
+  var mod = document.createElement('div');
+  mod.id = 'modal';
+  document.body.appendChild(mod);
+  wireGate();
+  wire();
+  render();
+
+  if (window.DealStore) startGate();
+  else window.addEventListener('dealstore-ready', startGate, { once:true });
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+else boot();
+
+})();
+</script>
+</body>
+</html>

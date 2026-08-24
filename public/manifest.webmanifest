@@ -1,0 +1,17 @@
+{
+  "name": "Deal Room",
+  "short_name": "Deal Room",
+  "description": "Shared real estate underwriting scorecard",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#F6F7F8",
+  "theme_color": "#0E5C63",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%230E5C63'/%3E%3Cpath d='M136 344V168h80a88 88 0 0 1 0 176zm56-40h24a48 48 0 0 0 0-96h-24zM320 168h56v176h-56z' fill='%23fff'/%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
