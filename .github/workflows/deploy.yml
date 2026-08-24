@@ -40,6 +40,24 @@ jobs:
             exit 1
           fi
 
+      # Which identity are we actually deploying as? Both failure modes here
+      # (a key from the wrong project, a key with no role granted) are invisible
+      # in the deploy error itself, which just says the project cannot be found.
+      - name: Show the deploying identity
+        run: |
+          python3 - "$GOOGLE_APPLICATION_CREDENTIALS" <<'PY'
+          import json, sys
+          with open(sys.argv[1]) as fh:
+              c = json.load(fh)
+          print("service account: " + c.get("client_email", "?"))
+          print("key belongs to project: " + c.get("project_id", "?"))
+          print("deploying to project: deal-room-2")
+          if c.get("project_id") != "deal-room-2":
+              print("MISMATCH — this key was made in a different project.")
+          PY
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
+
       - name: Deploy hosting and Firestore rules
         run: firebase deploy --only hosting,firestore:rules --project deal-room-2 --non-interactive
         env:
