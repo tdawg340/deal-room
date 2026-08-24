@@ -773,6 +773,44 @@ function mult(n){
   if (n === null || n === undefined || !isFinite(n)) return '—';
   return n.toFixed(2) + '×';
 }
+/* Thousands separators for what someone types into the form. Kept separate
+   from money()/pct(), which format computed output — this one has to survive a
+   half-typed number ("1,4", "6.", "-") without fighting the person typing. */
+function groupDigits(v){
+  var s = String(v === null || v === undefined ? '' : v);
+  if (s === '') return '';
+  var neg = /^\s*-/.test(s);
+  var cleaned = s.replace(/[^0-9.]/g, '');
+  if (cleaned === '') return neg ? '-' : '';
+  var parts = cleaned.split('.');
+  var whole = parts[0].replace(/^0+(?=\d)/, '');
+  var out = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  if (parts.length > 1) out += '.' + parts.slice(1).join('').slice(0, 6);
+  return (neg ? '-' : '') + out;
+}
+
+/* Reformat in place and put the caret back where the typist left it — counted
+   in digits, since inserting a comma shifts every character index after it. */
+function regroupInput(el){
+  var before = el.value;
+  var formatted = groupDigits(before);
+  if (formatted === before) return formatted;
+
+  var caret = el.selectionStart;
+  var digitsBefore = caret === null ? null : (before.slice(0, caret).match(/[0-9]/g) || []).length;
+  el.value = formatted;
+
+  if (digitsBefore !== null){
+    var pos = 0, seen = 0;
+    while (pos < formatted.length && seen < digitsBefore){
+      if (formatted.charCodeAt(pos) >= 48 && formatted.charCodeAt(pos) <= 57) seen++;
+      pos++;
+    }
+    try { el.setSelectionRange(pos, pos); } catch(e){ /* not all inputs allow it */ }
+  }
+  return formatted;
+}
+
 function fmtMetric(v, unit){
   if (v === null || v === undefined || !isFinite(v)) return '—';
   if (unit === '%')  return pct(v, 2);
@@ -1219,7 +1257,7 @@ function renderDealRow(d, a, rank){
   var open = UI.openId === d.id;
   var sub = [];
   if (d.address) sub.push(esc(d.address));
-  if (d.units)   sub.push(esc(d.units) + (Number(d.units) === 1 ? ' unit' : ' units'));
+  if (d.units)   sub.push(Number(d.units).toLocaleString('en-US') + (Number(d.units) === 1 ? ' unit' : ' units'));
   if (d.squareFeet) sub.push(Number(d.squareFeet).toLocaleString('en-US') + ' sf');
   sub.push(ASSET_CLASSES[d.assetClass] || 'Multifamily');
 
@@ -1396,7 +1434,9 @@ function blankDeal(){
 function fNum(key, label, opts){
   opts = opts || {};
   var v = UI.editing[key];
-  var input = '<input type="text" inputmode="decimal" class="num-in" data-k="' + key + '" value="' + attr(v) + '"' +
+  var shown = opts.plain ? v : groupDigits(v);
+  var input = '<input type="text" inputmode="decimal" class="num-in' + (opts.plain ? ' plain' : '') +
+    '" data-k="' + key + '" value="' + attr(shown) + '"' +
     (opts.placeholder ? ' placeholder="' + attr(opts.placeholder) + '"' : '') + '>';
   var wrapped = opts.money ? '<span class="prefixed"><span>$</span>' + input + '</span>'
               : opts.pct   ? '<span class="suffixed"><span>%</span>' + input + '</span>'
@@ -1478,7 +1518,7 @@ function renderForm(){
         fSelect('stage','Stage', Object.keys(STAGES).map(function(k){ return [k, STAGES[k]]; })) +
         fNum('units','Units') +
         fNum('squareFeet','Rentable sf') +
-        fNum('yearBuilt','Year built') +
+        fNum('yearBuilt','Year built',{plain:true}) +
         fText('source','Source / broker',{placeholder:'Listing, off-market, broker name'}) +
       '</div></fieldset>' +
 
@@ -1961,7 +2001,12 @@ function wire(){
     /* deal form fields */
     var k = t.getAttribute && t.getAttribute('data-k');
     if (k && UI.editing){
-      UI.editing[k] = t.type === 'checkbox' ? t.checked : t.value;
+      if (t.classList && t.classList.contains('num-in') && !t.classList.contains('plain')){
+        /* the field shows 1,400,000; the deal stores 1400000 */
+        UI.editing[k] = regroupInput(t).replace(/,/g, '');
+      } else {
+        UI.editing[k] = t.type === 'checkbox' ? t.checked : t.value;
+      }
       if (k === 'assetClass') render(); else refreshRail();
       return;
     }
